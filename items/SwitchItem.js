@@ -56,7 +56,7 @@ SwitchItem.prototype.setItemState = function(value, callback) {
     const self = this;
 	
     const command = (value == '1') ? this.onCommand() : 'Off';
-    this.log(`[switch] iOS - send message to ${this.name}: ${command}`);
+    this.log(`[Switch] - send message to ${this.name}: ${command}`);
     this.platform.ws.sendCommand(this.uuidAction, command);
     callback();
 

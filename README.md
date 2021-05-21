@@ -1,9 +1,14 @@
 # homebridge-loxone-connect
 Homebridge plugin for controlling Loxone.
 
+❤️ [One-time donation](paypal.me/activebyte)
+
 There are a few variants from the original loxone homebridge plugin,
 but they all have the same problem. Most of them are abandoned and they don't work well with RGBWW leds because they only send HSV colors this causes the leds to not use the white leds.
 Those are the two main reason that i made this plugin, also i added a lot of fun and useful stuff.
+
+I am currently working on implementing smoke detectors and alarm system. Since i don't have these to test i'm looking for someone who has them and wants them implemented.
+Feel free to contact me if interested.
 
 Feature requests are always welcome!
 
@@ -28,11 +33,11 @@ Follow all the installation steps there.
 Install the plugin through npm or download the files from here.
 
 ```sh
-$ sudo npm install -g homebridge-loxone-control
+$ sudo npm install -g homebridge-loxone-connect
 ```
 Or update to latest version when already installed:
 ```sh
-$ sudo npm update -g homebridge-loxone-control
+$ sudo npm update -g homebridge-loxone-connect
 ```
 
 ##### Homebridge config.json
@@ -98,7 +103,8 @@ To create the correct accessory type from Loxone items, some attribute parsing i
 Currently these assumptions are made:
 
 **Light switch**
-To make a Loxone Switch appear as a Lightbulb in homebridge you have to give it the lightbulb icon.
+To make a switch appear as a Lightbulb you have to give it the lightning category.
+*You can use a different category name as long as the category has the lightning icon.
 
 **Sensors**
 To make a sensor you have to use the Virtual Status block.
@@ -107,7 +113,7 @@ These sensors can be made with it:
 * **Temperature sensor** Name has to start with 'Temperature'  
 * **Humidity sensor** Name has to start with 'Humidity'  
 * **Motion sensor** Name has to start with 'Motion'  
-* **Lux sensor** Name has to start with 'Brightness'
+* **Lux sensor** Name has to start with 'Brightness'  
 
 **Doorbell**
 For the doorbell notification we also use the Virtual Status block, the name has to start with 'Doorbell'.
@@ -133,9 +139,6 @@ HomeKit has a limit of 100 accessories per bridge. If you have a large Loxone se
 
 **pushbuttons**
 Since Homekit has no pushbutton concept, I implemented pushbuttons as switches in Homekit. Telling Siri to put them On will send a pulse to the pushbutton. In Homekit, they will appear to be On for a second.
-
-### Buy Me A Coffee! ☕
-If you can contribute or you want to, feel free to do it at [Buy me a coffee! ☕](https://www.buymeacoffee.com/michaeldev), I will be really thankfull for anything even if it is a coffee or just a kind comment towards my work, because that helps me a lot!
 
 ### Problem solving
 

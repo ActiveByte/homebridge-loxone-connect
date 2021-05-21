@@ -2,13 +2,15 @@ const moduleexports = module.exports = {};
 moduleexports.AbstractItem = require('../items/AbstractItem.js');
 //Important: name the exports identical to Loxone type to have an automatic match
 //If not possible, define in checkCustomAttrs which will override in certain cases
-moduleexports.LightControllerV2MoodSwitch = require('../items/LightControllerV2MoodSwitchItem.js'); //!!!sdqsd
+
+moduleexports.LightControllerV2MoodSwitch = require('../items/LightControllerV2MoodSwitchItem.js');
 moduleexports.TemperatureSensor = require('../items/TemperatureSensorItem.js');
 moduleexports.Trigger = require('../items/TriggerItem.js');
 moduleexports.HumiditySensor = require('../items/HumiditySensorItem.js');
 moduleexports.Switch = require('../items/SwitchItem.js');
 moduleexports.TimedSwitch = require('../items/TimedSwitchItem.js');
 moduleexports.Lightbulb = require('../items/LightbulbItem.js');
+moduleexports.Outlet = require('../items/OutletItem.js');
 moduleexports.Dimmer = require('../items/DimmerItem.js');
 moduleexports.Jalousie = require('../items/BlindsItem.js');
 moduleexports.Pushbutton = require('../items/PushbuttonItem.js');
@@ -18,6 +20,7 @@ moduleexports.DoorBell = require('../items/DoorBellItem.js');
 moduleexports.MotionSensor = require('../items/MotionSensorItem.js');
 moduleexports.ContactSensor = require('../items/ContactSensorItem.js');
 moduleexports.LightSensor = require('../items/LightSensorItem.js');
+moduleexports.SmokeSensor = require('../items/SmokeSensorItem.js');
 
 moduleexports.Factory = function(LoxPlatform, homebridge) {
     this.platform = LoxPlatform;
@@ -67,7 +70,6 @@ moduleexports.Factory.prototype.parseSitemap = function(jsonSitemap) {
             this.log(`Platform - Accessory Found: ${this.itemList[key].name}`);
 
             if (accessoryList.length > 99) {
-                // https://github.com/nfarina/homebridge/issues/509
                 this.log(`Platform - Accessory count limit (100) exceeded so skipping: '${this.itemList[key].name}' of type ${this.itemList[key].type} was skipped.`);
             } else {
                 
@@ -122,30 +124,57 @@ moduleexports.Factory.prototype.parseSitemap = function(jsonSitemap) {
 moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, catList) => {
     const item = factory.itemList[itemId];
     //this function will make accesories more precise based on other attributes
-    //eg, all InfoOnlyAnalog items which start with the name 'Temperat' are considered temperature sensors
+
+    if (item.type == "InfoOnlyAnalog") {
+        if (item.name.startsWith('ContactSensor')) {
+            item.type = "ContactSensor"; 
+        } else if (item.name.startsWith('Doorbell')) {
+            item.type = "DoorBell";
+        } else if (item.name.startsWith('Motion')) {
+            item.type = "MotionSensor";
+        } else if (item.name.startsWith('Brightness')) {
+            item.type = "LightSensor";
+        } else if (item.name.startsWith('Trigger')) {
+            item.type = "Trigger";
+        }
+    }
 
     if (item.name.startsWith('Temperature')) {
         item.type = "TemperatureSensor";
+    }
 
-    } else if (item.name.indexOf("Humidity") !== -1) {
+    if (item.name.startsWith('Humidity')) {
         item.type = "HumiditySensor";
-
-    } else if (item.type == "TimedSwitch") {
+    }
+    
+    /*if (item.type = "SmokeSensor")) {
+        item.type = "SmokeSensor";
+    }*/ //! Need smoke sensor to test for native support
+    
+    if (item.type == "TimedSwitch") {
             item.type = "TimedSwitch";
+    }
 
-    /*} else if (item.type == "Jalousie") { //! Needs work
-            item.type = "Jalousie";*/
+    /*
+    if (item.type == "Jalousie") { //! Needs work
+        item.type = "Jalousie";
+    }
+        */
 
-    } else if (catList[item.cat] !== undefined && catList[item.cat].image === "00000000-0000-0002-2000000000000000.svg") {
-        //this is the lightbulb image, which means that this is a lightning control
-        if(item.type === "Switch") {
-            item.type = "Lightbulb";
+    if(item.type === "Switch") {
+        if(catList[item.cat] !== undefined){
+            if (catList[item.cat].image === "00000000-0000-0002-2000000000000000.svg") {
+                item.type = "Lightbulb";
+            } else if (catList[item.cat].image === "00000000-0000-002d-2000000000000000.svg") {
+                item.type = "Outlet";
+            }
         }
-    } else if (item.parentType === "LightController" || item.parentType === "LightControllerV2") {
-        //this is a subcontrol of a lightcontroller
+    }
+    
+    if (item.parentType === "LightController" || item.parentType === "LightControllerV2") {
         if(item.type === "Switch") {
             item.type = "Lightbulb";
-        } else if (item.type === "ColorPickerV2") { // Handle the new ColorPickerV2 which replaces the colorPicker in the new LightControllerV2
+        } else if (item.type === "ColorPickerV2") {
             item.type = "Colorpicker";
         }
     }
@@ -154,31 +183,12 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
         item.type = "Gate";
     }
 
-    if (item.type == "InfoOnlyAnalog") {
-        if (item.name.startsWith('ContactSensor')) {
-            item.type = "ContactSensor";
-            //item.name = item.name.slice(14); // Remove "ContactSensor:" from name. 
-        } else if (item.name.startsWith('Doorbell')) {
-            item.type = "DoorBell";
-        } else if (item.name.startsWith('Motion')) {
-            item.type = "MotionSensor";
-        } else if (item.name.startsWith('Temperature')) {
-            item.type = "TemperatureSensor";
-        } else if (item.name.startsWith('Humidity')) {
-            item.type = "HumiditySensor";
-        } else if (item.name.startsWith('Brightness')) {
-            item.type = "LightSensor";
-        } else if (item.name.startsWith('Trigger')) {
-            item.type = "Trigger";
-        }
-    }
-
     if (item.type === "EIBDimmer") {
         item.type = "Dimmer"
     }
 
     if(item.name.indexOf("Loxone") !== -1) {
-        //this is a Loxone status or temperature, I don't need these in Siri
+        //this is a Loxone status or temperature
         item.skip = true;
     }
 

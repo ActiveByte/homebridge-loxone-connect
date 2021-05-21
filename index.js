@@ -15,24 +15,29 @@ module.exports = homebridge => {
 
     //Add inheritance of the AbstractItem to the Accessory object
     Utility.addSupportTo(ItemFactory.AbstractItem, Accessory);
-        //All other items are child of the abstractItem
-        Utility.addSupportTo(ItemFactory.LightControllerV2MoodSwitch, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.Trigger, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.TemperatureSensor, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.HumiditySensor, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.MotionSensor, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.ContactSensor, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.LightSensor, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.Dimmer, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.Colorpicker, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.Gate, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.DoorBell, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.Jalousie, ItemFactory.AbstractItem);
-		Utility.addSupportTo(ItemFactory.TimedSwitch, ItemFactory.AbstractItem);
-        Utility.addSupportTo(ItemFactory.Switch, ItemFactory.AbstractItem);
-            //Add childs of switch
-            Utility.addSupportTo(ItemFactory.Lightbulb, ItemFactory.Switch);
-            Utility.addSupportTo(ItemFactory.Pushbutton, ItemFactory.Switch);
+    
+    //All other items are child of the abstractItem
+    Utility.addSupportTo(ItemFactory.LightControllerV2MoodSwitch, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Trigger, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.TemperatureSensor, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.HumiditySensor, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.MotionSensor, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.ContactSensor, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.LightSensor, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Dimmer, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Colorpicker, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Gate, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.DoorBell, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Jalousie, ItemFactory.AbstractItem);
+	Utility.addSupportTo(ItemFactory.TimedSwitch, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Switch, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.SmokeSensor, ItemFactory.AbstractItem);
+
+    //Add childs of switch
+    Utility.addSupportTo(ItemFactory.Lightbulb, ItemFactory.Switch);
+    Utility.addSupportTo(ItemFactory.Outlet, ItemFactory.Switch);
+    Utility.addSupportTo(ItemFactory.Pushbutton, ItemFactory.Switch);
+    
     homebridge.registerPlatform("homebridge-loxoneWs", "LoxoneWs", LoxPlatform);
 };
 
