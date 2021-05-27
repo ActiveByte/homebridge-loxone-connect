@@ -17,7 +17,7 @@ LightSensorItem.prototype.initListener = function() {
 LightSensorItem.prototype.callBack = function(value) {
     //function that gets called by the registered ws listener
 
-    console.log("Got new state for Light Level: " + value);
+    //console.log("Got new state for Light Level: " + value);
 
     this.lightlevel = value;
 

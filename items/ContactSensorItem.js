@@ -16,7 +16,7 @@ ContactSensorItem.prototype.initListener = function() {
 
 ContactSensorItem.prototype.callBack = function(value) {
     //function that gets called by the registered ws listener
-    console.log(`Got new state for ContactSensor: ${value}`);
+    //console.log(`Got new state for ContactSensor: ${value}`);
 
     this.isClosed = value;
 

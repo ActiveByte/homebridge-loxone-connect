@@ -336,7 +336,7 @@ ColorItem.prototype.getItemSaturationState = function(callback) {
 };
 
 ColorItem.prototype.setItemColorTemperatureState = function(value, callback) {
-    this.log(`setItemColorTemperatureState: ${value}`);
+    //this.log(`setItemColorTemperatureState: ${value}`);
     this.lastsetmode = 'colortemperature';
     this.colortemperature = value;
     
@@ -355,7 +355,7 @@ ColorItem.prototype.setItemPowerState = function(value, callback) {
 };
 
 ColorItem.prototype.setItemHueState = function(value, callback) {
-    this.log(`setItemHueState: ${value}`);
+    //this.log(`setItemHueState: ${value}`);
     this.lastsetmode = 'color';
     this.hue = parseInt(value);
 
@@ -365,7 +365,7 @@ ColorItem.prototype.setItemHueState = function(value, callback) {
 };
 
 ColorItem.prototype.setItemSaturationState = function(value, callback) {
-    this.log(`setItemSaturationState: ${value}`);
+    //this.log(`setItemSaturationState: ${value}`);
     this.lastsetmode = 'color';
     this.saturation = parseInt(value);
     
@@ -391,7 +391,7 @@ ColorItem.prototype.setColorState = function(callback) {
 
     }
 
-    this.log(`[color] iOS - send message to ${this.name} ${command}`);
+    this.log(`[Color] HomeKit - send message to ${this.name} ${command}`);
     this.platform.ws.sendCommand(this.uuidAction, command);
 
     callback();

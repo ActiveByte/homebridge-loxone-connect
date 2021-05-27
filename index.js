@@ -27,11 +27,12 @@ module.exports = homebridge => {
     Utility.addSupportTo(ItemFactory.Dimmer, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Colorpicker, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Gate, ItemFactory.AbstractItem);
-    Utility.addSupportTo(ItemFactory.DoorBell, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Doorbell, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Jalousie, ItemFactory.AbstractItem);
 	Utility.addSupportTo(ItemFactory.TimedSwitch, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Switch, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.SmokeSensor, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Alarm, ItemFactory.AbstractItem);
 
     //Add childs of switch
     Utility.addSupportTo(ItemFactory.Lightbulb, ItemFactory.Switch);
@@ -42,55 +43,74 @@ module.exports = homebridge => {
 };
 
 // Platform constructor
-// config may be null
 function LoxPlatform(log, config) {
-    //log("LoxPlatform Init");
     const platform = this;
     this.log = log;
     this.config = config;
     this.protocol = "http";
-
+    
     if (!this.config['host']) throw new Error("Configuration missing: loxone host (please provide the IP address here)");
-    if (!this.config['port']) throw new Error("Configuration missing: loxone port (if default port, specify 7777)");
     if (!this.config['username']) throw new Error("Configuration missing: loxone username");
     if (!this.config['password']) throw new Error("Configuration missing: loxone password");
-    if (!this.config['rooms']) this.log("Info: rooms array not configured. Adding every room.");
-
+    
+    if (!this.config['port']) this.config['port'] = 80;
     this.host           = config["host"];
     this.port           = config["port"];
     this.username       = config["username"];
     this.password       = config["password"];
-	if (config['rooms']) {
-        this.rooms = config["rooms"];
-    } else {
-        this.rooms =[];
-    }
-	this.log(typeof this.rooms);
+    
+    //* Options *//
+    options = config['options'];
 
-    if (config['timedSwitch']) {
-        if(config["timedSwitch"] == "On" || config["timedSwitch"] == "Pulse"){
-            this.timedswitch_method = config["timedSwitch"];
+    this.rooms =[];
+    if (options['rooms']) {
+        this.rooms = options["rooms"];
+    }
+    
+    this.moodSwitches = 'none';
+    if (options['moodSwitches']) {
+        this.moodSwitches = options["moodSwitches"];
+    }
+
+    this.timedswitch_method = "pulse";
+    if (options['StairwellSwitch'] == "on") {
+        this.timedswitch_method = "on";
+    }
+    
+    this.alarmsystem_method = "delayedon";
+    if (options['alarmSystem'] == "on") {
+        this.alarmsystem_method = "on";
+    }
+
+    this.alarmsystem_trigger = 5;
+    if (options['alarmTrigerLevel']) {
+        if(options['alarmTrigerLevel'] > 0 && options['alarmTrigerLevel'] < 7){
+            this.alarmsystem_trigger = options['alarmTrigerLevel'];
         }else{
-            this.log("Info: TimedSwitch method invalid. Default to Pulse.");
+            this.log("Info: alarmTrigerLevel must be an integer between 1 and 6");
         }
-    }else{
-        this.log("Info: TimedSwitch method not configured. Default to Pulse.");
-        this.timedswitch_method = "Pulse";
     }
 
-    if (config['moodSwitches']) {
-        this.moodSwitches = config["moodSwitches"];
-    } else {
-        this.moodSwitches = 'none';
-    } 
+    //* Alias *//
+    const alias = config['alias'];
+    
+    let aliases = ['Outlet', 'Lighting', 'Doorbell', 'Trigger', 'Contact', 'Motion', 'Brightness', 'Temperature', 'Humidity'];
 
+    aliases.forEach(function(item) {
+        if(!alias[item]){
+            alias[item] = item;
+        }
+    })
+
+    this.alias = alias;
+    
     //Also make a WS connection
     this.ws = new WSListener(platform);
 }
 
 LoxPlatform.prototype.accessories = function(callback) {
     const that = this;
-    //this.log("Getting Loxone configuration.");
+    this.log("Getting Loxone configuration.");
     const itemFactory = new ItemFactory.Factory(this,Homebridge);
     const url = itemFactory.sitemapUrl();
     this.log("Platform - Waiting 8 seconds until initial state is retrieved via WebSocket.");

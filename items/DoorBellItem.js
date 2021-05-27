@@ -1,6 +1,6 @@
 const request = require("request");
 
-const DoorBell = function(widget,platform,homebridge) {
+const Doorbell = function(widget,platform,homebridge) {
 
     this.platform = platform;
     this.uuidAction = widget.uuidAction;
@@ -8,16 +8,16 @@ const DoorBell = function(widget,platform,homebridge) {
     this.busy = false;
     this.debounce = 2;
 
-    DoorBell.super_.call(this, widget,platform,homebridge);
+    Doorbell.super_.call(this, widget,platform,homebridge);
 };
 
 // Register a listener to be notified of changes in this items value
-DoorBell.prototype.initListener = function() {
+Doorbell.prototype.initListener = function() {
     this.platform.ws.registerListenerForUUID(this.uuidAction, this.callBack.bind(this));
 };
     
-DoorBell.prototype.callBack = function(value) {
-    //console.log(`Got new state for DoorBell: ${value}`);
+Doorbell.prototype.callBack = function(value) {
+    //console.log(`Got new state for Doorbell: ${value}`);
     if (value == 1) {
         if (!this.busy) {
             this.busy = true;
@@ -37,7 +37,7 @@ DoorBell.prototype.callBack = function(value) {
     
 };
 
-DoorBell.prototype.getOtherServices = function() {
+Doorbell.prototype.getOtherServices = function() {
 
     const otherService = new this.homebridge.hap.Service.Doorbell();
 
@@ -47,7 +47,7 @@ DoorBell.prototype.getOtherServices = function() {
     return otherService;
 };
 
-DoorBell.prototype.stepState = function() {
+Doorbell.prototype.stepState = function() {
     if (this.state === 1) {
         this.state = 2;
     } else {
@@ -55,8 +55,8 @@ DoorBell.prototype.stepState = function() {
     }
 };
 
-DoorBell.prototype.getState = function(callback) {
+Doorbell.prototype.getState = function(callback) {
     callback(undefined, this.state);
 };
 
-module.exports = DoorBell;
+module.exports = Doorbell;

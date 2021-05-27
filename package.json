@@ -1,7 +1,7 @@
 {
   "name": "homebridge-loxone-connect",
-  "version": "1.0.3",
-  "description": "Websocket based plugin for controlling Loxone with Homebridge",
+  "version": "1.0.4",
+  "description": "Homebridge plugin for controlling Loxone.",
   "main": "index.js",
   "repository": {
     "type": "git",

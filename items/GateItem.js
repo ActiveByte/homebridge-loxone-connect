@@ -61,7 +61,7 @@ GateItem.prototype.callBackActive = function(value) {
 };
 
 GateItem.prototype.callBackPosition = function(value) {
-    console.log(`Got new state for GatePosition: ${value}`);
+    //console.log(`Got new state for GatePosition: ${value}`);
 
     let new_doorstate = this.currentdoorstate;
     if (value == 1) {
@@ -138,7 +138,7 @@ GateItem.prototype.setTargetDoorState = function(value, callback) {
         command = 'close';
     } 
 
-    this.log(`[gate] iOS - send message to ${this.name}: ${command}`);
+    this.log(`[Gate] HomeKit - send message to ${this.name}: ${command}`);
     this.platform.ws.sendCommand(this.uuidAction, command);
 
     callback();

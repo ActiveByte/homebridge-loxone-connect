@@ -21,55 +21,55 @@ WSListener.prototype.startListener = function () {
     const self = this;
 
     if (typeof this.ws == 'undefined') {
-        console.log(`New WS: ${this.host}:${this.port}`);
+        //self.log(`New WS: ${this.host}:${this.port}`);
         this.ws = new LoxoneWebSocket(`${this.host}:${this.port}`, this.username, this.password, true, 'Token-Enc');
         this.ws.connect();
     }
 
     this.ws.on('close_failed', () => {
-        self.log("LOXONE WS: close failed");
+        self.log("WS: close failed");
     });
 
     this.ws.on('connect', () => {
-        self.log("LOXONE WS: connect");
+        self.log("WS: connect");
     });
 
     this.ws.on('connect_failed', () => {
-      //throw new Error("LOXONE WS: connect failed");
+      //throw new Error("WS: connect failed");
       //connection can drop sometimes, try to reconnect silently (max once per 10 seconds)
-      self.log("LOXONE WS: connection failed, reconnecting...");
+      self.log("WS: connection failed, reconnecting...");
       setTimeout(() => { self.ws.connect(); }, 10000);
     });
 
     this.ws.on('connection_error', error => {
-      //throw new Error("LOXONE WS: connection error: " + error);
+      //throw new Error("WS: connection error: " + error);
       //connection can drop sometimes, try to reconnect silently (max once per 10 seconds)
-      self.log(`LOXONE WS: connection error, reconnecting...${error}`);
+      self.log(`WS: connection error, reconnecting...${error}`);
       setTimeout(() => { self.ws.connect(); }, 10000);
     });
 
     this.ws.on('send', message => {
-        //self.log("LOXONE WS: message: "+ message);
+        //self.log("WS: message: "+ message);
     });
 
     this.ws.on('handle_message', message => {
-        //self.log("LOXONE WS: handle message: " + JSON.stringify(message));
+        //self.log("WS: handle message: " + JSON.stringify(message));
     });
 
     this.ws.on('message_header', message => {
-        //self.log("LOXONE WS: message header: " + JSON.stringify(message));
+        //self.log("WS: message header: " + JSON.stringify(message));
     });
 
     this.ws.on('message_text', message => {
-        //self.log("LOXONE WS: message text " + message);
+        //self.log("WS: message text " + message);
     });
 
     this.ws.on('message_file', message => {
-        //self.log("LOXONE WS: message file " + message);
+        //self.log("WS: message file " + message);
     });
 
     this.ws.on('update_event_value', (uuid, message) => {
-        //self.log("LOXONE WS: update value " + uuid + ":" + message);
+        //self.log("WS: update value " + uuid + ":" + message);
         self.uuidCache[uuid] = message;
         if(typeof self.uuidCallbacks[uuid] != 'undefined') {
             for (let r = 0; r < self.uuidCallbacks[uuid].length; r++) {
@@ -79,7 +79,7 @@ WSListener.prototype.startListener = function () {
     });
 
     this.ws.on('update_event_text', (uuid, message) => {
-        //self.log("LOXONE WS: update event text " + uuid + ":" + message);
+        //self.log("WS: update event text " + uuid + ":" + message);
         self.uuidCache[uuid] = message;
         //self.log('cache now contains ' + Object.keys(self.uuidCache).length + ' items');
         if(typeof self.uuidCallbacks[uuid] != 'undefined') {
@@ -90,7 +90,7 @@ WSListener.prototype.startListener = function () {
     });
 
     this.ws.on('update_event_daytimer', (uuid, message) => {
-        //self.log("LOXONE WS: update event timer " + uuid + ":" + message);
+        //self.log("WS: update event timer " + uuid + ":" + message);
         if(typeof self.uuidCallbacks[uuid] != 'undefined') {
             for (let r = 0; r < self.uuidCallbacks[uuid].length; r++) {
                 self.uuidCallbacks[uuid][r](message);
@@ -99,7 +99,7 @@ WSListener.prototype.startListener = function () {
     });
 
     this.ws.on('update_event_weather', (uuid, message) => {
-        //self.log("LOXONE WS: update event weather " + uuid + ":" + message);
+        //self.log("WS: update event weather " + uuid + ":" + message);
         if(typeof self.uuidCallbacks[uuid] != 'undefined') {
             for (let r = 0; r < self.uuidCallbacks[uuid].length; r++) {
                 self.uuidCallbacks[uuid][r](message);
@@ -108,11 +108,11 @@ WSListener.prototype.startListener = function () {
     });
 
     this.ws.on('message_invalid', message => {
-        self.log(`LOXONE WS: message invalid ${message}`);
+        self.log(`WS: message invalid ${message}`);
     });
 
     this.ws.on('keepalive', time => {
-        self.log(`LOXONE WS: keepalive ${time}`);
+        //self.log(`WS: keepalive ${time}`);
     });
 
 };

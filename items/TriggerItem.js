@@ -14,7 +14,7 @@ TriggerItem.prototype.initListener = function() {
 
 TriggerItem.prototype.callBack = function(value) {
     //function that gets called by the registered ws listener
-    console.log("Got new state for event " + value);
+    //console.log("Got new state for event " + value);
 
     //make sure this change is directly communicated to HomeKit
     this.otherService

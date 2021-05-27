@@ -1,0 +1,26 @@
+{
+    "platform": "LoxoneWs",
+    "name": "Loxone",
+    "host": "192.168.1.27",
+    "port": "80",
+    "username": "homebridge",
+    "password": "homebridge",
+    "options": {
+        "StairwellSwitch": "Pulse",
+        "moodSwitches": "none",
+        "alarmSystem": "delayedon",
+        "alarmTrigerLevel": 5
+    },
+    "alias": {
+        "Lighting": "Lighting",
+        "Outlet": "Outlet",
+        "Doorbell": "Doorbell",
+        "Trigger": "Trigger",
+        "Contact": "Contact",
+        "Motion": "Motion",
+        "Brightness": "Brightness",
+        "Temperature": "Temperature",
+        "Humidity": "Humidity",
+        "Smoke": "Smoke"
+    }
+}

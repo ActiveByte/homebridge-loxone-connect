@@ -1,34 +1,32 @@
 # homebridge-loxone-connect
 Homebridge plugin for controlling Loxone.
 
-❤️ [One-time donation](paypal.me/activebyte)
+❤️ [One-time donation](https://paypal.me/activebyte)
 
 There are a few variants from the original loxone homebridge plugin,
-but they all have the same problem. Most of them are abandoned and they don't work well with RGBWW leds because they only send HSV colors this causes the leds to not use the white leds.
-Those are the two main reason that i made this plugin, also i added a lot of fun and useful stuff.
-
-I am currently working on implementing smoke detectors and alarm system. Since i don't have these to test i'm looking for someone who has them and wants them implemented.
-Feel free to contact me if interested.
+but they all have the same problem. Most of them are abandoned and they don't work completely.
+Those are the two main reason that i made this plugin, i also added a lot of fun and useful stuff.
 
 Feature requests are always welcome!
 
 The plugin will be able to communicate with the following items from your Loxone setup:
   - Lights (Switches, Dimmers and RGB/ Smart-actor RGBW leds)
-  - Other switches (On/Off, Pushbutton, Timed switch)
-  - Sensors (Temperature, Humidty, Light, Motion and Contact)*
+  - Other switches (On/Off, Pushbutton, Stairwell, Outlet)
+  - Sensors (Temperature, Humidty, Light, Motion, Contact and Smoke)*
   - Doorbell notification*
   - Gates
+  - Window blinds
+  - Alarm system
   - HomeKit trigger*
-  - Window blinds (WIP)
 
-*Needs additional configuration, check [assumptions](#assumptions)
-The only configuration required is the credentials to your Loxone miniserver.Q
+*Needs additional configuration, check [assumptions](#assumptions).
+The only configuration required is the credentials to your Loxone miniserver.
 
-### Prerequisites
+# Prerequisites
 [Homebridge](https://github.com/nfarina/homebridge)
 Follow all the installation steps there.
 
-### Installation
+# Installation
 
 Install the plugin through npm or download the files from here.
 
@@ -40,107 +38,96 @@ Or update to latest version when already installed:
 $ sudo npm update -g homebridge-loxone-connect
 ```
 
-##### Homebridge config.json
+# Configuration
+See config-sample.json for an example configuration. 
 
-Add the platform section to your Homebridge config.json (usually in ~/.homebridge):
-```
-{
-    "bridge": {
-        "name": "Homebridge",
-        "username": "CA:AA:12:34:56:78",
-        "port": 51826,
-        "pin": "012-34-567"
-    },
+### Platform configuration
 
-    "description": "Homebridge config",
+| Parameter | Note |
+| --- | --- |
+| `host` | IP of your loxone miniserver |
+| `port` | optional, port of your miniserver (default: 80) |
+| `username` | loxone username |
+| `password` | loxone password |
+| `options` | optional, check [options](#options) |
+| `alias` | optional, check [assumption aliases](#assumption-aliases)|
 
-    "platforms": [
-        {
-            "platform": "LoxoneWs",
-            "name": "Loxone",
-            "host": "192.168.1.2",
-            "port": "80",
-            "username": "homebridge",
-            "password": "somepassword"
-        }
-    ]
-}
-```
-Replace fields
-* **host** by the IP of your loxone miniserver
-* **port** by the port of your miniserver (use 80 if no special port)
-* **username** by the Loxone username
-* **password** by the Loxone password
+### Options
 
-I strongly suggest to create a dedicate Loxone user through Loxone Config (eg homebridge). This way you can restrict access to sensitive items or filter out unneeded controls.
+| Parameter | Note |
+| --- | --- |
+| `rooms` | optional, specify an array of interested rooms to filter on. If empty or not given, all elements are used. <br/> Example: specifying "rooms" : ["Kitchen", "Bedroom"] will limit your bridge to only elements from those 2 rooms.  |
+| `StairwellSwitch` | optional, choose the switch behavior of the Stairwell Light Switch, default: "pulse".<br/><br/> Has 2 possible values: <br/> * pulse : Normal operation, light will stay on for fixed amount of time. This is the default in case not given. <br/> * on : Light will stay on as long as the switch is enabled. |
+| `moodSwitches` | optional, displays Loxone moods (wich are part of LightControllerV2 elements) as seperate buttons, default: "none". <br/><br/>  Has 3 possible values: <br/>* none : does not include moods. This is the default in case not given. <br/> * all : include moods as actionable item <br/> * only : only include moods and filter out any other element |
+| `alarmSystem` | optional, choose between instant and delayed activation of the alarm, default: "delayedon". <br/><br/> Has 2 possible values <br/> * delayedon : Alarm will be delayed. Default. <br/> * on : Alarm will be instantly on. |
+| `alarmTrigerLevel` | optional, choose at what level the alarm notification will be send to HomeKit, default: "5". <br/><br/> Has 6 possible values:<br/> * 1 : Silent.<br/> * 2 : Acustic.<br/> * 3 : Optical.<br/> * 4 : Internal.<br/> * 5 : External.<br/> * 6 : Remote. |
 
-### Optional configuration fields in the platform section
+### Assumption aliases
 
-**rooms**
+| Parameter | Note |
+| --- | --- |
+| `Outlet` | Outlet alias. |
+| `Lighting` | Lighting alias. |
+| `Doorbell` | contact sensor alias. |
+| `Trigger` | trigger alias. |
+| `Contact` | contact sensor alias. |
+| `Motion` | motion sensor alias. |
+| `Brightness` | light sensor alias. |
+| `Temperature` | temperature sensor alias. |
+| `Humidity` | humidity sensor alias. |
+| `Smoke` | smoke sensor alias. |
 
-To specify an array of interested rooms to filter on. If empty or not given, all elements are used.
-Eg: specifying "rooms" : ["Kitchen", "Bedroom"] will limit your bridge to only elements from those 2 rooms. 
+For more information check [assumptions](#assumptions).
 
-**moodSwitches**
+# Assumptions
+To create the correct accessory type from Loxone items, some attribute parsing is required inside Loxone config.<br/>
+The prefixes can be changed in [assumption aliases](#assumption-aliases).<br/>
+Currently these assumptions are made:<br/>
 
-Can use Loxone moods which are part of LightControllerV2 elements. (In order to use this, you'll need to [convert](https://www.loxone.com/enen/kb/lighting-controller-v2/) any 'old' LightControllers blocks.)
+### Lightbulb
 
-Has 3 possible values
-* none : does not include moods. This is the default in case not given.
-* all : include moods as actionable item
-* only : only include moods and filter out any other element
-
-**timedSwitch**
-
-Choose the switch behavior of the Stairwell Light Switch.
-
-Has 2 possible values
-* Pulse : Normal operation, light will stay on for fixed amount of time. This is the default in case not given.
-* On : Light will stay on as long as the switch is enabled.
-
-### Assumptions
-To create the correct accessory type from Loxone items, some attribute parsing is required.
-Currently these assumptions are made:
-
-**Light switch**
-To make a switch appear as a Lightbulb you have to give it the lightning category.
+To make a lightbulb accessory you have to give a switch the prefix "Lighting" or you can give it the lightning category.
 *You can use a different category name as long as the category has the lightning icon.
 
-**Sensors**
-To make a sensor you have to use the Virtual Status block.
+### Outlet
 
-These sensors can be made with it:
-* **Temperature sensor** Name has to start with 'Temperature'  
-* **Humidity sensor** Name has to start with 'Humidity'  
-* **Motion sensor** Name has to start with 'Motion'  
-* **Lux sensor** Name has to start with 'Brightness'  
+To make a lightbulb accessory you have to give a switch the prefix "Outlet" or you can give it the power category.
+*You can use a different category name as long as the category has the power icon.
 
-**Doorbell**
-For the doorbell notification we also use the Virtual Status block, the name has to start with 'Doorbell'.
-The doorbell will show 'Not compatible' but it will still send the notification.
+### Sensors, Doorbell, Trigger
 
-**HomeKit Trigger**
-To make a HomeKit trigger you have to use the Virtual Status block.
-The name of the status block has to start with 'Trigger'.
-This can be used for Homekit automation like triggering a scene to become active.
+For the following accessory's you will have to use a "Virtual Status block" inside Loxone config to make the following sensors.
 
+| Accessory | Note |
+| --- | --- |
+| `Doorbell` | Has to have prefix "Doorbell".<br/>The Doorbell will show 'Not compatible' but it will still send the notification. |
+| `Trigger` | Has to have prefix "Trigger".<br/>This can be used for Homekit automation like triggering a scene to become active. |
+| `Contact sensor` | Has to have prefix "Contact". |
+| `Motion sensor` | Has to have prefix "Motion". |
+| `Light sensor` | Has to have prefix "Brightness". |
+| `Temperature sensor` | Has to have prefix "Temperature". |
+| `Humidity sensor` | Has to have prefix "Humidity". |
+| `Smoke sensor` | Has to have prefix "Smoke". |
 
-The controls will be named like you named them in Loxone. Rename them through the iOS Home app to make it more intuitive for using with Siri. Eg LIGHT_KITCHEN can be renamed to 'main light' and added to room Kitchen. Then you can ask Siri to 'turn on the main light in the kitchen'.
+The controls will be named like you named them in Loxone Config. Rename them through the iOS Home app to make it more intuitive for using with Siri. Eg LIGHT_KITCHEN can be renamed to 'main light' and added to room Kitchen. Then you can ask Siri to 'turn on the main light in the kitchen'.
 
-### Limitations
+# Limitations
 
 **rooms**
+
 The Homebridge/HAP protocol does currently not allow attaching the Loxone rooms to the accessories. That is a manual action to be done once using the IOS Home app (or the Eve app which is much more user-friendly).
 
 _Special note: organizing into rooms can be done from Eve, but renaming the items should (unfortunately) be done from the IOS Home app. Name changes in Eve are not reflected in Home and thus not known by Siri._
 
 **100 items**
+
 HomeKit has a limit of 100 accessories per bridge. If you have a large Loxone setup, try to filter unneeded items out either through [a dedicated Loxone usergroup](https://github.com/Sroose/homebridge-loxone-ws/issues/27) or in the checkCustomAttrs function.
 
 **pushbuttons**
+
 Since Homekit has no pushbutton concept, I implemented pushbuttons as switches in Homekit. Telling Siri to put them On will send a pulse to the pushbutton. In Homekit, they will appear to be On for a second.
 
-### Problem solving
+# Problem solving
 
 If you have troubles getting the states on your iOS device, [try removing the files in your 'persists' folder](https://github.com/nfarina/homebridge#my-ios-app-cant-find-homebridge) (usually in ~/.homebridge/persist) and restarting homebridge.
 

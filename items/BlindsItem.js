@@ -108,7 +108,7 @@ BlindsItem.prototype.setItem = function(value, callback) {
 
     //set a flag that we're in control. this way we'll know if the action is coming from Homekit or from external actor (eg Loxone app)
     //this flag is removed after 20 seconds (increase if you have really long or slow blinds ;)
-    this.inControl =true;
+    this.inControl = true;
     setTimeout(() => { self.inControl = false; }, 20000);
 
     this.startedPosition = this.currentPosition;
@@ -121,7 +121,7 @@ BlindsItem.prototype.setItem = function(value, callback) {
         //reverse again the value
         command = `ManualPosition/${100 - value}`;
     }
-    this.log(`[blinds] iOS - send message to ${this.name}: ${command}`);
+    this.log(`[Blinds] HomeKit - send message to ${this.name}: ${command}`);
     this.platform.ws.sendCommand(this.uuidAction, command);
     callback();
 

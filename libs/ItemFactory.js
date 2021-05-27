@@ -16,23 +16,22 @@ moduleexports.Jalousie = require('../items/BlindsItem.js');
 moduleexports.Pushbutton = require('../items/PushbuttonItem.js');
 moduleexports.Colorpicker = require('../items/ColorpickerItem.js');
 moduleexports.Gate = require('../items/GateItem.js');
-moduleexports.DoorBell = require('../items/DoorBellItem.js');
+moduleexports.Doorbell = require('../items/DoorbellItem.js');
 moduleexports.MotionSensor = require('../items/MotionSensorItem.js');
 moduleexports.ContactSensor = require('../items/ContactSensorItem.js');
 moduleexports.LightSensor = require('../items/LightSensorItem.js');
 moduleexports.SmokeSensor = require('../items/SmokeSensorItem.js');
+moduleexports.Alarm = require('../items/AlarmItem.js');
 
 moduleexports.Factory = function(LoxPlatform, homebridge) {
     this.platform = LoxPlatform;
+    this.alias = this.platform.alias;
     this.log = this.platform.log;
     this.homebridge = homebridge;
     this.itemList = {};
     this.catList = {};
     this.roomList = {};
-    //this.uniqueIds = [];
 };
-
-//TODO: we could also get this information from the websocket, avoiding the need of an extra request.
 
 moduleexports.Factory.prototype.sitemapUrl = function() {
     let serverString = this.platform.host;
@@ -123,43 +122,40 @@ moduleexports.Factory.prototype.parseSitemap = function(jsonSitemap) {
 
 moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, catList) => {
     const item = factory.itemList[itemId];
+    const alias = factory.alias;
     //this function will make accesories more precise based on other attributes
 
     if (item.type == "InfoOnlyAnalog") {
-        if (item.name.startsWith('ContactSensor')) {
+        if (item.name.startsWith(alias['Contact'])) {
             item.type = "ContactSensor"; 
-        } else if (item.name.startsWith('Doorbell')) {
-            item.type = "DoorBell";
-        } else if (item.name.startsWith('Motion')) {
+        } else if (item.name.startsWith(alias['Doorbell'])) {
+            item.type = "Doorbell";
+        } else if (item.name.startsWith(alias['Motion'])) {
             item.type = "MotionSensor";
-        } else if (item.name.startsWith('Brightness')) {
+        } else if (item.name.startsWith(alias['Brightness'])) {
             item.type = "LightSensor";
-        } else if (item.name.startsWith('Trigger')) {
+        } else if (item.name.startsWith(alias['Trigger'])) {
             item.type = "Trigger";
+        }else if (item.name.startsWith(alias['Temperature'])) {
+            item.type = "TemperatureSensor";
+        }else if (item.name.startsWith(alias['Humidity'])) {
+            item.type = "HumiditySensor";
+        }else if (item.name.startsWith(alias['Smoke'])) {
+            item.type = "SmokeSensor";
         }
     }
-
-    if (item.name.startsWith('Temperature')) {
-        item.type = "TemperatureSensor";
-    }
-
-    if (item.name.startsWith('Humidity')) {
-        item.type = "HumiditySensor";
-    }
-    
-    /*if (item.type = "SmokeSensor")) {
-        item.type = "SmokeSensor";
-    }*/ //! Need smoke sensor to test for native support
     
     if (item.type == "TimedSwitch") {
-            item.type = "TimedSwitch";
+        item.type = "TimedSwitch";
     }
 
-    /*
-    if (item.type == "Jalousie") { //! Needs work
+    if (item.type == "Alarm") {
+        item.type = "Alarm";
+    }
+
+    if (item.type == "Jalousie") {
         item.type = "Jalousie";
     }
-        */
 
     if(item.type === "Switch") {
         if(catList[item.cat] !== undefined){
@@ -168,6 +164,14 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
             } else if (catList[item.cat].image === "00000000-0000-002d-2000000000000000.svg") {
                 item.type = "Outlet";
             }
+        }
+
+        if (item.name.startsWith(alias['Outlet'])) {
+            item.type = "Outlet"; 
+        }
+
+        if (item.name.startsWith(alias['Lighting'])) {
+            item.type = "Lightbulb"; 
         }
     }
     
@@ -179,7 +183,7 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
         }
     }
 
-    if (item.type === "Gate") {
+    if (item.type === alias['Gate']) {
         item.type = "Gate";
     }
 
