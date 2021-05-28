@@ -1,0 +1,100 @@
+{
+    "pluginAlias": "LoxoneWs",
+    "pluginType": "platform",
+    "singular": true,
+    "schema": {
+        "type": "object",
+        "properties": {
+            "host": {
+                "type": "string",
+                "required": true,
+                "description": "IP of your loxone miniserver"
+            },
+            "port": {
+                "type": "integer",
+                "description": "Port of your miniserver (default: 80)"
+            },
+            "username": {
+                "type": "string",
+                "required": true,
+                "description": "Loxone username"
+            },
+            "password": {
+                "type": "string",
+                "required": true,
+                "description": "Loxone password"
+            },
+            "options": {
+                "type": "object",
+                "title": "Options",
+                "properties": {
+                    "rooms": {
+                        "type": "string",
+                        "description": "Optional, specify an array of interested rooms to filter on. If empty or not given, all elements are used. <br/> Example: specifying ['Kitchen', 'Bedroom'] will limit your bridge to only elements from those 2 rooms."
+                    },
+                    "StairwellSwitch": {
+                        "type": "string",
+                        "default": "pulse",
+                        "enum": ["pulse","on"],
+                        "description": "Optional, choose the switch behavior of the Stairwell Light Switch, default: 'pulse'.<br/><br/> Has 2 possible values: <br/> * pulse : Normal operation, light will stay on for fixed amount of time. This is the default in case not given. <br/> * on : Light will stay on as long as the switch is enabled."
+                    },
+                    "moodSwitches": {
+                        "type": "string",
+                        "default": "none",
+                        "enum": ["none","all","only"],
+                        "description": "Optional, displays Loxone moods (wich are part of LightControllerV2 elements) as seperate buttons, default: 'none'. <br/><br/>  Has 3 possible values: <br/>* none : does not include moods. This is the default in case not given. <br/> * all : include moods as actionable item. <br/> * only : only include moods and filter out any other element."
+                    },
+                    "alarmSystem": {
+                        "type": "string",
+                        "default": "delayedon",
+                        "enum": ["delayedon","on"],
+                        "description": "optional, choose between instant and delayed activation of the alarm, default: 'delayedon'. <br/><br/> Has 2 possible values <br/> * delayedon : Alarm will be delayed. Default. <br/> * on : Alarm will be instantly on."
+                    },
+                    "alarmTrigerLevel": {
+                        "type": "integer",
+                        "default": "5",
+                        "enum": ["1","2","3","4","5","6"],
+                        "description": "Optional, choose at what level the alarm notification will be send to HomeKit, default: '5'. <br/><br/> Has 6 possible values:<br/> * 1 : Silent.<br/> * 2 : Acustic.<br/> * 3 : Optical.<br/> * 4 : Internal.<br/> * 5 : External.<br/> * 6 : Remote."
+                    }
+                }
+            },
+            "alias": {
+                "type": "object",
+                "title": "Assumption aliases",
+                "description": "Change the prefixes being used for the assumptions",
+                "properties": {
+                    "Lighting": {
+                        "type": "string"
+                    },
+                    "Outlet": {
+                        "type": "string"
+                    },
+                    "Doorbell": {
+                        "type": "string"
+                    },
+                    "Trigger": {
+                        "type": "string"
+                    },
+                    "Contact": {
+                        "type": "string"
+                    },
+                    "Motion": {
+                        "type": "string"
+                    },
+                    "Brightness": {
+                        "type": "string"
+                    },
+                    "Temperature": {
+                        "type": "string"
+                    },
+                    "Humidity": {
+                        "type": "string"
+                    },
+                    "Smoke": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

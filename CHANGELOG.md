@@ -1,6 +1,11 @@
 
 # Change Log
 
+## [1.0.6] - 2021/05/28
+  
+**Added features:**
+- Integrated configuration with config.schema.json.
+
 ## [1.0.5] - 2021/05/28
   
 **Bug fixes:**
