@@ -1,6 +1,11 @@
 
 # Change Log
 
+## [1.0.5] - 2021/05/28
+  
+**Bug fixes:**
+- Plugin not loading on some systems duo to captial error.
+
 ## [1.0.4] - 2021/05/27
   
 **Added features:**

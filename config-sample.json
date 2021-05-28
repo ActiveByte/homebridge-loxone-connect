@@ -6,7 +6,7 @@
     "username": "homebridge",
     "password": "homebridge",
     "options": {
-        "StairwellSwitch": "Pulse",
+        "StairwellSwitch": "pulse",
         "moodSwitches": "none",
         "alarmSystem": "delayedon",
         "alarmTrigerLevel": 5
