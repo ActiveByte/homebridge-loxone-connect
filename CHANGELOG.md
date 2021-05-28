@@ -1,6 +1,11 @@
 
 # Change Log
 
+## [1.0.7] - 2021/05/28
+  
+**Bug fixes:**
+- Fixed error when options and alias is not in the config file.
+
 ## [1.0.6] - 2021/05/28
   
 **Added features:**

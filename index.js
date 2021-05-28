@@ -60,7 +60,10 @@ function LoxPlatform(log, config) {
     this.password       = config["password"];
     
     //* Options *//
-    options = config['options'];
+    if(!config['options']){
+        config['options'] = "";
+    }
+    const options = config['options'];
 
     this.rooms =[];
     if (options['rooms']) {
@@ -92,6 +95,9 @@ function LoxPlatform(log, config) {
     }
 
     //* Alias *//
+    if(!config['alias']){
+        config['alias'] = "";
+    }
     const alias = config['alias'];
     
     let aliases = ['Outlet', 'Lighting', 'Doorbell', 'Trigger', 'Contact', 'Motion', 'Brightness', 'Temperature', 'Humidity'];
