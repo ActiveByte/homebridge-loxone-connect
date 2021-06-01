@@ -10,9 +10,6 @@ const AbstractItem = function(widget,platform,homebridge) {
     
     // provide explicit UUID to prevent automatic UUID generation by homebridge (which would fail because of possibly equal item name)
     this.uuid_base = this.UUID;
-
-    //other variables used by child classes
-    this.setFromLoxone = false;
     
 	// console.log("Generating new homebridge accessory '" + this.name + "' with UUID: " + this.UUID + " from accessory with ID: " + widget.uuidAction);
 

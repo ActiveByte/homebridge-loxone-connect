@@ -12,7 +12,6 @@ PushbuttonItem.prototype.callBack = function(value) {
     this.currentState = value;
 
     //also make sure this change is directly communicated to HomeKit
-    this.setFromLoxone = true;
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.On)
         .setValue(this.currentState == '1');
@@ -22,13 +21,22 @@ PushbuttonItem.prototype.callBack = function(value) {
         this.currentState = false;
         this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.On)
-        .setValue(false,
-            () => {
-                this.setFromLoxone = false;
-            }
-        );
+        .setValue(false);
     }, 1000);
 
+};
+
+PushbuttonItem.prototype.getOtherServices = function() {
+    const otherService = new this.homebridge.hap.Service.Switch();
+
+    this.item = 'Pushbutton';
+
+    otherService.getCharacteristic(this.homebridge.hap.Characteristic.On)
+        .on('set', this.setItemState.bind(this))
+        .on('get', this.getItemState.bind(this))
+        .updateValue(this.currentState == '1');
+
+    return otherService;
 };
 
 PushbuttonItem.prototype.onCommand = () => {

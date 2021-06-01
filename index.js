@@ -15,7 +15,7 @@ module.exports = homebridge => {
 
     //Add inheritance of the AbstractItem to the Accessory object
     Utility.addSupportTo(ItemFactory.AbstractItem, Accessory);
-    
+
     //All other items are child of the abstractItem
     Utility.addSupportTo(ItemFactory.LightControllerV2MoodSwitch, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Trigger, ItemFactory.AbstractItem);
@@ -24,21 +24,28 @@ module.exports = homebridge => {
     Utility.addSupportTo(ItemFactory.MotionSensor, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.ContactSensor, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.LightSensor, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.LeakSensor, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Dimmer, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Colorpicker, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Gate, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Doorbell, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Jalousie, ItemFactory.AbstractItem);
-	Utility.addSupportTo(ItemFactory.TimedSwitch, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.TimedSwitch, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Switch, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.SmokeSensor, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Alarm, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Lock, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Valve, ItemFactory.AbstractItem);
 
     //Add childs of switch
     Utility.addSupportTo(ItemFactory.Lightbulb, ItemFactory.Switch);
     Utility.addSupportTo(ItemFactory.Outlet, ItemFactory.Switch);
     Utility.addSupportTo(ItemFactory.Pushbutton, ItemFactory.Switch);
+    Utility.addSupportTo(ItemFactory.Fan, ItemFactory.Switch);
     
+    //Add childs of shower
+    Utility.addSupportTo(ItemFactory.Sprinkler, ItemFactory.Valve);
+
     homebridge.registerPlatform("homebridge-loxoneWs", "LoxoneWs", LoxPlatform);
 };
 
@@ -48,28 +55,28 @@ function LoxPlatform(log, config) {
     this.log = log;
     this.config = config;
     this.protocol = "http";
-    
+
     if (!this.config['host']) throw new Error("Configuration missing: loxone host (please provide the IP address here)");
     if (!this.config['username']) throw new Error("Configuration missing: loxone username");
     if (!this.config['password']) throw new Error("Configuration missing: loxone password");
-    
+
     if (!this.config['port']) this.config['port'] = 80;
-    this.host           = config["host"];
-    this.port           = config["port"];
-    this.username       = config["username"];
-    this.password       = config["password"];
-    
+    this.host = config["host"];
+    this.port = config["port"];
+    this.username = config["username"];
+    this.password = config["password"];
+
     //* Options *//
-    if(!config['options']){
+    if (!config['options']) {
         config['options'] = "";
     }
     const options = config['options'];
 
-    this.rooms =[];
+    this.rooms = [];
     if (options['rooms']) {
         this.rooms = options["rooms"];
     }
-    
+
     this.moodSwitches = 'none';
     if (options['moodSwitches']) {
         this.moodSwitches = options["moodSwitches"];
@@ -79,7 +86,7 @@ function LoxPlatform(log, config) {
     if (options['StairwellSwitch'] == "on") {
         this.timedswitch_method = "on";
     }
-    
+
     this.alarmsystem_method = "delayedon";
     if (options['alarmSystem'] == "on") {
         this.alarmsystem_method = "on";
@@ -87,37 +94,48 @@ function LoxPlatform(log, config) {
 
     this.alarmsystem_trigger = 5;
     if (options['alarmTrigerLevel']) {
-        if(options['alarmTrigerLevel'] > 0 && options['alarmTrigerLevel'] < 7){
+        if (options['alarmTrigerLevel'] > 0 && options['alarmTrigerLevel'] < 7) {
             this.alarmsystem_trigger = options['alarmTrigerLevel'];
-        }else{
+        } else {
             this.log("Info: alarmTrigerLevel must be an integer between 1 and 6");
         }
     }
 
+    this.autoLock = 1;
+    if (options['autoLock']) {
+        this.autoLock = options['autoLock'];
+    }
+
+    this.autoLockDelay = 5;
+    if (options['autoLockDelay']) {
+        this.autoLockDelay = options['autoLockDelay'];
+    }
+
+
     //* Alias *//
-    if(!config['alias']){
+    if (!config['alias']) {
         config['alias'] = "";
     }
     const alias = config['alias'];
-    
-    let aliases = ['Outlet', 'Lighting', 'Doorbell', 'Trigger', 'Contact', 'Motion', 'Brightness', 'Temperature', 'Humidity'];
 
-    aliases.forEach(function(item) {
-        if(!alias[item]){
+    let aliases = ['Outlet', 'Lighting', 'Doorbell', 'Trigger', 'Contact', 'Motion', 'Brightness', 'Temperature', 'Humidity', 'Lock', 'Valve', 'Sprinklers', 'Fan', 'Leak'];
+
+    aliases.forEach(function (item) {
+        if (!alias[item]) {
             alias[item] = item;
         }
     })
 
     this.alias = alias;
-    
+
     //Also make a WS connection
     this.ws = new WSListener(platform);
 }
 
-LoxPlatform.prototype.accessories = function(callback) {
+LoxPlatform.prototype.accessories = function (callback) {
     const that = this;
     this.log("Getting Loxone configuration.");
-    const itemFactory = new ItemFactory.Factory(this,Homebridge);
+    const itemFactory = new ItemFactory.Factory(this, Homebridge);
     const url = itemFactory.sitemapUrl();
     this.log("Platform - Waiting 8 seconds until initial state is retrieved via WebSocket.");
     setTimeout(() => {
@@ -132,9 +150,5 @@ LoxPlatform.prototype.accessories = function(callback) {
                 that.log("Platform - There was a problem connecting to Loxone.");
             }
         })
-    },8000);
+    }, 8000);
 };
-
-
-
-

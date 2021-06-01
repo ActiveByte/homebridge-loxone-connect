@@ -20,7 +20,6 @@ ContactSensorItem.prototype.callBack = function(value) {
 
     this.isClosed = value;
 
-    //also make sure this change is directly communicated to HomeKit
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.ContactSensorState)
         .setValue(this.isClosed);

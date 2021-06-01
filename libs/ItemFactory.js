@@ -11,6 +11,7 @@ moduleexports.Switch = require('../items/SwitchItem.js');
 moduleexports.TimedSwitch = require('../items/TimedSwitchItem.js');
 moduleexports.Lightbulb = require('../items/LightbulbItem.js');
 moduleexports.Outlet = require('../items/OutletItem.js');
+moduleexports.Fan = require('../items/FanItem.js');
 moduleexports.Dimmer = require('../items/DimmerItem.js');
 moduleexports.Jalousie = require('../items/BlindsItem.js');
 moduleexports.Pushbutton = require('../items/PushbuttonItem.js');
@@ -21,7 +22,11 @@ moduleexports.MotionSensor = require('../items/MotionSensorItem.js');
 moduleexports.ContactSensor = require('../items/ContactSensorItem.js');
 moduleexports.LightSensor = require('../items/LightSensorItem.js');
 moduleexports.SmokeSensor = require('../items/SmokeSensorItem.js');
+moduleexports.LeakSensor = require('../items/LeakSensorItem.js');
 moduleexports.Alarm = require('../items/AlarmItem.js');
+moduleexports.Lock = require('../items/LockItem.js');
+moduleexports.Valve = require('../items/ValveItem.js');
+moduleexports.Sprinkler = require('../items/SprinklerItem.js');
 
 moduleexports.Factory = function(LoxPlatform, homebridge) {
     this.platform = LoxPlatform;
@@ -142,6 +147,8 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
             item.type = "HumiditySensor";
         }else if (item.name.startsWith(alias['Smoke'])) {
             item.type = "SmokeSensor";
+        }else if (item.name.startsWith(alias['Leak'])) {
+            item.type = "LeakSensor";
         }
     }
     
@@ -167,11 +174,27 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
         }
 
         if (item.name.startsWith(alias['Outlet'])) {
-            item.type = "Outlet"; 
+            item.type = "Outlet";
+        }
+        
+        if (item.name.startsWith(alias['Fan'])) {
+            item.type = "Fan";
         }
 
         if (item.name.startsWith(alias['Lighting'])) {
             item.type = "Lightbulb"; 
+        }
+
+        if (item.name.startsWith(alias['Lock'])) {
+            item.type = "Lock"; 
+        }
+
+        if (item.name.startsWith(alias['Valve'])) {
+            item.type = "Valve";
+        }
+
+        if (item.name.startsWith(alias['Sprinklers'])) {
+            item.type = "Sprinkler";
         }
     }
     

@@ -8,7 +8,9 @@
         "StairwellSwitch": "pulse",
         "moodSwitches": "none",
         "alarmSystem": "delayedon",
-        "alarmTrigerLevel": 5
+        "alarmTrigerLevel": 5,
+        "autoLock": 1,
+        "autoLockDelay": 5
     },
     "alias": {
         "Lighting": "Lighting",
@@ -20,6 +22,11 @@
         "Brightness": "Brightness",
         "Temperature": "Temperature",
         "Humidity": "Humidity",
-        "Smoke": "Smoke"
+        "Leak": "Leak",
+        "Smoke": "Smoke",
+        "Valve": "Valve",
+        "Sprinklers": "Sprinklers",
+        "Fan": "Fan",
+        "Lock": "Lock"
     }
 }

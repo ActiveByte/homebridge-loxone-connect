@@ -3,9 +3,9 @@ const request = require("request");
 const SwitchItem = function(widget,platform,homebridge) {
 
     this.platform = platform;
-    this.uuidAction = widget.uuidAction; //to control a switch, use the uuidAction
-    this.stateUuid = widget.states.active; //a switch always has a state called active, which is the uuid which will receive the event to read
-    this.currentState = undefined; //will be 0 or 1 for Switch
+    this.uuidAction = widget.uuidAction;
+    this.stateUuid = widget.states.active;
+    this.currentState = undefined;
 
     SwitchItem.super_.call(this, widget,platform,homebridge);
 };
@@ -29,6 +29,8 @@ SwitchItem.prototype.callBack = function(value) {
 SwitchItem.prototype.getOtherServices = function() {
     const otherService = new this.homebridge.hap.Service.Switch();
 
+    this.item = 'Switch';
+
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.On)
         .on('set', this.setItemState.bind(this))
         .on('get', this.getItemState.bind(this))
@@ -42,12 +44,6 @@ SwitchItem.prototype.getItemState = function(callback) {
     callback(undefined, this.currentState == '1');
 };
 
-SwitchItem.prototype.onCommand = () => {
-    //function to set the command to be used for On
-    //for a switch, this is 'On', but subclasses can override this to eg Pulse
-    return 'On';
-};
-
 SwitchItem.prototype.setItemState = function(value, callback) {
 
     //sending new state to loxone
@@ -55,8 +51,8 @@ SwitchItem.prototype.setItemState = function(value, callback) {
 
     const self = this;
 	
-    const command = (value == '1') ? this.onCommand() : 'Off';
-    this.log(`[Switch] - send message to ${this.name}: ${command}`);
+    const command = (value == '1') ? 'On' : 'Off';
+    this.log(`[${this.item}] - send message to ${this.name}: ${command}`);
     this.platform.ws.sendCommand(this.uuidAction, command);
     callback();
 

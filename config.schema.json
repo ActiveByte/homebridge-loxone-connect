@@ -55,6 +55,17 @@
                         "default": "5",
                         "enum": ["1","2","3","4","5","6"],
                         "description": "Optional, choose at what level the alarm notification will be send to HomeKit, default: '5'. <br/><br/> Has 6 possible values:<br/> * 1 : Silent.<br/> * 2 : Acustic.<br/> * 3 : Optical.<br/> * 4 : Internal.<br/> * 5 : External.<br/> * 6 : Remote."
+                    },
+                    "autoLock": {
+                        "type": "integer",
+                        "default": "1",
+                        "enum": ["0","1"],
+                        "description": "Optional, whether the lock should automatically lock after being opened, default: '1'."
+                    },
+                    "autoLockDelay": {
+                        "type": "integer",
+                        "default": "5",
+                        "description": "Optional, time (in seconds) until the lock will auto lock if enabled, default: '5'."
                     }
                 }
             },
@@ -90,7 +101,22 @@
                     "Humidity": {
                         "type": "string"
                     },
+                    "Leak": {
+                        "type": "string"
+                    },
                     "Smoke": {
+                        "type": "string"
+                    },
+                    "Valve": {
+                        "type": "string"
+                    },
+                    "Sprinklers": {
+                        "type": "string"
+                    },
+                    "Fan": {
+                        "type": "string"
+                    },
+                    "Lock": {
                         "type": "string"
                     }
                 }

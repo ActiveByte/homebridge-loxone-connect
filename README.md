@@ -11,13 +11,17 @@ Feature requests are always welcome!
 
 The plugin will be able to communicate with the following items from your Loxone setup:
   - Lights (Switches, Dimmers and RGB/ Smart-actor RGBW leds)
-  - Other switches (On/Off, Pushbutton, Stairwell, Outlet)
   - Sensors (Temperature, Humidty, Light, Motion, Contact and Smoke)*
+  - Switches (On/Off, Pushbutton, Stairwell)
   - Doorbell notification*
-  - Gates
+  - Valve, Sprinklers*
+  - HomeKit trigger*
   - Window blinds
   - Alarm system
-  - HomeKit trigger*
+  - Outlet*
+  - Gate
+  - Lock*
+  - Fan*
 
 *Needs additional configuration, check [assumptions](#assumptions).
 The only configuration required is the credentials to your Loxone miniserver.
@@ -61,6 +65,8 @@ See config-sample.json for an example configuration.
 | `moodSwitches` | optional, displays Loxone moods (wich are part of LightControllerV2 elements) as seperate buttons, default: "none". <br/><br/>  Has 3 possible values: <br/>* none : does not include moods. This is the default in case not given. <br/> * all : include moods as actionable item. <br/> * only : only include moods and filter out any other element. |
 | `alarmSystem` | optional, choose between instant and delayed activation of the alarm, default: "delayedon". <br/><br/> Has 2 possible values <br/> * delayedon : Alarm will be delayed. Default. <br/> * on : Alarm will be instantly on. |
 | `alarmTrigerLevel` | optional, choose at what level the alarm notification will be send to HomeKit, default: "5". <br/><br/> Has 6 possible values:<br/> * 1 : Silent.<br/> * 2 : Acustic.<br/> * 3 : Optical.<br/> * 4 : Internal.<br/> * 5 : External.<br/> * 6 : Remote. |
+| `autoLock` | optional, whether the lock should automatically lock after being opened, default: "1". |
+| `autoLockDelay` | optional, time (in seconds) until the lock will auto lock if enabled, default: "5". |
 
 ### Assumption aliases
 
@@ -68,14 +74,19 @@ See config-sample.json for an example configuration.
 | --- | --- |
 | `Outlet` | Outlet alias. |
 | `Lighting` | Lighting alias. |
-| `Doorbell` | contact sensor alias. |
-| `Trigger` | trigger alias. |
-| `Contact` | contact sensor alias. |
-| `Motion` | motion sensor alias. |
-| `Brightness` | light sensor alias. |
-| `Temperature` | temperature sensor alias. |
-| `Humidity` | humidity sensor alias. |
+| `Doorbell` | Contact sensor alias. |
+| `Trigger` | Trigger alias. |
+| `Contact` | Contact sensor alias. |
+| `Motion` | Motion sensor alias. |
+| `Brightness` | Light sensor alias. |
+| `Temperature` | Temperature sensor alias. |
+| `Humidity` | Humidity sensor alias. |
+| `Leak` | Leak sensor alias. |
 | `Smoke` | smoke sensor alias. |
+| `Valve` | Valve alias. |
+| `Sprinklers` | Sprinklers alias. |
+| `Fan` | Fan alias. |
+| `Lock` | Lock alias. |
 
 For more information check [assumptions](#assumptions).
 
@@ -93,6 +104,19 @@ To make a lightbulb accessory you have to give a switch the prefix "Lighting" or
 
 To make a lightbulb accessory you have to give a switch the prefix "Outlet" or you can give it the power category.
 *You can use a different category name as long as the category has the power icon.
+
+### Fan
+
+To make a fan accessory you have to give a switch the prefix "Fan".
+
+### Lock
+
+To make a lock accessory you have to give a switch the prefix "Lock".
+*automatic locking can be configured.
+
+### Valve, Sprinklers
+
+To make a valve or sprinkler accessory you have to give a switch the prefix "Valve" or "Sprinklers".
 
 ### Sensors, Doorbell, Trigger
 
@@ -122,6 +146,10 @@ _Special note: organizing into rooms can be done from Eve, but renaming the item
 ### 100 items
 
 HomeKit has a limit of 100 accessories per bridge. If you have a large Loxone setup, try to filter unneeded items out either through [a dedicated Loxone usergroup](https://github.com/Sroose/homebridge-loxone-ws/issues/27) or in the checkCustomAttrs function.
+
+### Visualization password
+
+Currently node-lox-ws-api does not support Loxone blocks with a visualization password on it. We are looking into solving this issue.
 
 ### pushbuttons
 

@@ -1,6 +1,20 @@
 
 # Change Log
 
+## [1.1.0] - 2021/06/01
+
+Still adding!
+
+**Added features:**
+- Leak Sensor
+- Sprinklers
+- Valve
+- Lock
+- Fan
+
+**Other:**
+- Code cleanup.
+
 ## [1.0.7] - 2021/05/28
   
 **Bug fixes:**

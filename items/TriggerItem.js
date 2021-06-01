@@ -16,7 +16,6 @@ TriggerItem.prototype.callBack = function(value) {
     //function that gets called by the registered ws listener
     //console.log("Got new state for event " + value);
 
-    //make sure this change is directly communicated to HomeKit
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.ProgrammableSwitchEvent)
         .setValue(value == '1');
