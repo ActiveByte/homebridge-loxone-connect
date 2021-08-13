@@ -1,6 +1,6 @@
 {
   "name": "homebridge-loxone-connect",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Homebridge plugin for controlling Loxone.",
   "main": "index.js",
   "repository": {
@@ -25,6 +25,7 @@
     "homebridge": ">=0.2.0"
   },
   "dependencies": {
+    "lxcommunicator": "^1.1.1",
     "node-lox-ws-api": "^0.4.3",
     "request": "^2.83.0",
     "ws": "^3.3.3"

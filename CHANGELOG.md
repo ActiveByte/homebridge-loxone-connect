@@ -1,6 +1,13 @@
 
 # Change Log
 
+## [1.1.1] - 2021/08/13
+
+
+**Added features:**
+
+- Accessory model will now show the room that it's assigned to inside Loxone Config.
+
 ## [1.1.0] - 2021/06/01
 
 Still adding!
@@ -13,7 +20,7 @@ Still adding!
 - Fan
 
 **Other:**
-- Code cleanup.
+- Some code cleanup.
 
 ## [1.0.7] - 2021/05/28
   

@@ -6,6 +6,7 @@ const AbstractItem = function(widget,platform,homebridge) {
     this.homebridge = homebridge;
     this.log = this.platform.log;
     this.name = widget.name;
+    this.roomname = widget.roomname;
     this.UUID = homebridge.hap.uuid.generate(String(widget.uuidAction));
     
     // provide explicit UUID to prevent automatic UUID generation by homebridge (which would fail because of possibly equal item name)
@@ -35,7 +36,7 @@ AbstractItem.prototype.getInformationServices = function() {
 
     informationService
         .setCharacteristic(this.homebridge.hap.Characteristic.Manufacturer, 'Loxone')
-        .setCharacteristic(this.homebridge.hap.Characteristic.Model, this.name)
+        .setCharacteristic(this.homebridge.hap.Characteristic.Model, "Room: " + this.roomname)
         .setCharacteristic(this.homebridge.hap.Characteristic.SerialNumber, this.widget.uuidAction)
         .setCharacteristic(this.homebridge.hap.Characteristic.Name, this.name);
     return informationService;

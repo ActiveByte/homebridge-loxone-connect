@@ -11,7 +11,7 @@ Feature requests are always welcome!
 
 The plugin will be able to communicate with the following items from your Loxone setup:
   - Lights (Switches, Dimmers and RGB/ Smart-actor RGBW leds)
-  - Sensors (Temperature, Humidty, Light, Motion, Contact and Smoke)*
+  - Sensors (Temperature, Humidty, Light, Motion, Contact, Leak and Smoke)*
   - Switches (On/Off, Pushbutton, Stairwell)
   - Doorbell notification*
   - Valve, Sprinklers*
@@ -131,6 +131,7 @@ For the following accessory's you will have to use a "Virtual Status block" insi
 | `Light sensor` | Has to have prefix "Brightness". |
 | `Temperature sensor` | Has to have prefix "Temperature". |
 | `Humidity sensor` | Has to have prefix "Humidity". |
+| `Leak sensor` | Has to have prefix "Leak". |
 | `Smoke sensor` | Has to have prefix "Smoke". |
 
 The controls will be named like you named them in Loxone Config. Rename them through the iOS Home app to make it more intuitive for using with Siri. Eg LIGHT_KITCHEN can be renamed to 'main light' and added to room Kitchen. Then you can ask Siri to 'turn on the main light in the kitchen'.
