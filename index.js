@@ -34,6 +34,7 @@ module.exports = homebridge => {
     Utility.addSupportTo(ItemFactory.Switch, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.SmokeSensor, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Alarm, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.RadioSwitchItem, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Lock, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Valve, ItemFactory.AbstractItem);
 
@@ -118,7 +119,7 @@ function LoxPlatform(log, config) {
     }
     const alias = config['alias'];
 
-    let aliases = ['Outlet', 'Lighting', 'Doorbell', 'Trigger', 'Contact', 'Motion', 'Brightness', 'Temperature', 'Humidity', 'Lock', 'Valve', 'Sprinklers', 'Fan', 'Leak'];
+    let aliases = ['Outlet', 'Lighting', 'Doorbell', 'Trigger', 'Contact', 'Motion', 'Brightness', 'Temperature', 'Humidity', 'Lock', 'Valve', 'Sprinklers', 'Fan', 'Leak', 'DefaultMood'];
 
     aliases.forEach(function (item) {
         if (!alias[item]) {
@@ -139,7 +140,8 @@ LoxPlatform.prototype.accessories = function (callback) {
     const url = itemFactory.sitemapUrl();
     this.log("Platform - Waiting 8 seconds until initial state is retrieved via WebSocket.");
     setTimeout(() => {
-        that.log(`Platform - Retrieving initial config from ${url}`);
+        const anonymizedUrl = url.substr(0, url.indexOf("//")) + "//"+ url.substr(url.indexOf("@") + 1);
+        that.log(`Platform - Retrieving initial config from ${anonymizedUrl}`);
         request.get({
             url,
             json: true
