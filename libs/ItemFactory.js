@@ -283,7 +283,7 @@ moduleexports.Factory.prototype.traverseSitemap = (jsonSitmap, factory) => {
                         }
 
                         // add radio switch items as switches
-                        if (control.type == 'Radio') {
+                        if (control.type == 'Radio' && factory.platform.radioSwitches == 1) {
                             var createRadioControl = (uuid, radioControl, radioSwitch) => {
                                 // create a control for RadioSwitchItem for each Radio output of this Radio control
                                 const control = JSON.parse(JSON.stringify(radioControl));

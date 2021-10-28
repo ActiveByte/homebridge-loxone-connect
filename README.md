@@ -12,7 +12,7 @@ Feature requests are always welcome!
 The plugin will be able to communicate with the following items from your Loxone setup:
   - Lights (Switches, Dimmers and RGB/ Smart-actor RGBW leds)
   - Sensors (Temperature, Humidty, Light, Motion, Contact, Leak and Smoke)*
-  - Switches (On/Off, Pushbutton, Stairwell)
+  - Switches (On/Off, Pushbutton, Stairwell,)
   - Doorbell notification*
   - Valve, Sprinklers*
   - HomeKit trigger*
@@ -63,6 +63,7 @@ See config-sample.json for an example configuration.
 | `rooms` | optional, specify an array of interested rooms to filter on. If empty or not given, all elements are used. <br/> Example: specifying "rooms" : ["Kitchen", "Bedroom"] will limit your bridge to only elements from those 2 rooms.  |
 | `StairwellSwitch` | optional, choose the switch behavior of the Stairwell Light Switch, default: "pulse".<br/><br/> Has 2 possible values: <br/> * pulse : Normal operation, light will stay on for fixed amount of time. This is the default in case not given. <br/> * on : Light will stay on as long as the switch is enabled. |
 | `moodSwitches` | optional, displays Loxone moods (wich are part of LightControllerV2 elements) as seperate buttons, default: "none". <br/><br/>  Has 3 possible values: <br/>* none : does not include moods. This is the default in case not given. <br/> * all : include moods as actionable item. <br/> * only : only include moods and filter out any other element. |
+| `radioSwitches` | optional, displays Loxone radio switches, default: "1". |
 | `alarmSystem` | optional, choose between instant and delayed activation of the alarm, default: "delayedon". <br/><br/> Has 2 possible values <br/> * delayedon : Alarm will be delayed. Default. <br/> * on : Alarm will be instantly on. |
 | `alarmTrigerLevel` | optional, choose at what level the alarm notification will be send to HomeKit, default: "5". <br/><br/> Has 6 possible values:<br/> * 1 : Silent.<br/> * 2 : Acustic.<br/> * 3 : Optical.<br/> * 4 : Internal.<br/> * 5 : External.<br/> * 6 : Remote. |
 | `autoLock` | optional, whether the lock should automatically lock after being opened, default: "1". |
@@ -87,6 +88,7 @@ See config-sample.json for an example configuration.
 | `Sprinklers` | Sprinklers alias. |
 | `Fan` | Fan alias. |
 | `Lock` | Lock alias. |
+| `DefaultMood` | LightControllerV2 default mood alias. (Default 'Off') |
 
 For more information check [assumptions](#assumptions).
 

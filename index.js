@@ -83,6 +83,11 @@ function LoxPlatform(log, config) {
         this.moodSwitches = options["moodSwitches"];
     }
 
+    this.radioSwitches = 1;
+    if (options['radioSwitches'] !== undefined) {
+        this.radioSwitches = options["radioSwitches"];
+    }
+
     this.timedswitch_method = "pulse";
     if (options['StairwellSwitch'] == "on") {
         this.timedswitch_method = "on";

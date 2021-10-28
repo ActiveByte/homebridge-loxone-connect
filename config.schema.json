@@ -44,6 +44,12 @@
                         "enum": ["none","all","only"],
                         "description": "Optional, displays Loxone moods (wich are part of LightControllerV2 elements) as seperate buttons, default: 'none'. <br/><br/>  Has 3 possible values: <br/>* none : does not include moods. This is the default in case not given. <br/> * all : include moods as actionable item. <br/> * only : only include moods and filter out any other element."
                     },
+                    "radioSwitches": {
+                        "type": "integer",
+                        "default": "1",
+                        "enum": ["0","1"],
+                        "description": "Optional, whether radio switches should be shown."
+                    },
                     "alarmSystem": {
                         "type": "string",
                         "default": "delayedon",

@@ -1,6 +1,13 @@
 
 # Change Log
 
+## [1.1.2] - 2021/10/28
+
+
+**Added features:**
+
+- Added RadioSwitch and default mood fallback - PR from Skippone
+
 ## [1.1.1] - 2021/08/13
 
 
@@ -9,8 +16,6 @@
 - Accessory model will now show the room that it's assigned to inside Loxone Config.
 
 ## [1.1.0] - 2021/06/01
-
-Still adding!
 
 **Added features:**
 - Leak Sensor
