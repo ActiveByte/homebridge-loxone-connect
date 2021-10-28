@@ -27,6 +27,7 @@
         "Valve": "Valve",
         "Sprinklers": "Sprinklers",
         "Fan": "Fan",
-        "Lock": "Lock"
+        "Lock": "Lock",
+        "DefaultMood": "Off"
     }
 }

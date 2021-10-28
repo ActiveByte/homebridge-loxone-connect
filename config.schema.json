@@ -118,6 +118,9 @@
                     },
                     "Lock": {
                         "type": "string"
+                    },
+                    "DefaultMood": {
+                        "type": "string"
                     }
                 }
             }

@@ -27,6 +27,7 @@ moduleexports.Alarm = require('../items/AlarmItem.js');
 moduleexports.Lock = require('../items/LockItem.js');
 moduleexports.Valve = require('../items/ValveItem.js');
 moduleexports.Sprinkler = require('../items/SprinklerItem.js');
+moduleexports.RadioSwitchItem = require('../items/RadioSwitchItem.js');
 
 moduleexports.Factory = function(LoxPlatform, homebridge) {
     this.platform = LoxPlatform;
@@ -49,7 +50,6 @@ moduleexports.Factory.prototype.sitemapUrl = function() {
 };
 
 moduleexports.Factory.prototype.parseSitemap = function(jsonSitemap) {
-
     //this is the function that gets called by index.js
     //first, parse the Loxone JSON that holds all controls
     moduleexports.Factory.prototype.traverseSitemap(jsonSitemap, this);
@@ -282,11 +282,54 @@ moduleexports.Factory.prototype.traverseSitemap = (jsonSitmap, factory) => {
                             }
                         }
 
+                        // add radio switch items as switches
+                        if (control.type == 'Radio') {
+                            var createRadioControl = (uuid, radioControl, radioSwitch) => {
+                                // create a control for RadioSwitchItem for each Radio output of this Radio control
+                                const control = JSON.parse(JSON.stringify(radioControl));
+                                control.subControls = null;
+                                control.uuidAction = uuid + '/' + radioSwitch.id;
+                                control.name = 'Radio switch ' + radioSwitch.name + ' of ' + radioControl.name;
+                                control.parentType = radioControl.type;
+                                control.uuidActionOriginal = uuid;
+                                control.radio = radioSwitch;
+                                control.type = 'RadioSwitchItem';
+
+                                return control;
+                            }
+
+                            // add default 'reset' switch
+                            if (control.details.allOff) {
+                                const switchInfo = { 
+                                    id: 0,
+                                    name: control.details.allOff 
+                                };
+                                const radioControl = createRadioControl(controlUuid, control, switchInfo);
+                                factory.itemList[radioControl.uuidAction] = radioControl;
+                            }
+
+                            // add all remaining radio  items
+                            var outputs = control.details.outputs || {};
+                            for (var radioOutputId in outputs) {
+                                if (outputs.hasOwnProperty(radioOutputId)) { 
+                                    const switchInfo = { 
+                                        id: radioOutputId,
+                                        name: outputs[radioOutputId] 
+                                    };
+    
+                                    const radioControl = createRadioControl(controlUuid, control, switchInfo);
+                                    factory.itemList[radioControl.uuidAction] = radioControl;
+                                }
+                            }
+                        }
+
                         // if we have a LightController(V2) then we create a new control (switch) for each Mood
                         if ((control.type == 'LightControllerV2') && ((factory.platform.moodSwitches == 'all') || (factory.platform.moodSwitches == 'only'))) {
                             const moods = JSON.parse(factory.platform.ws.getLastCachedValue(control.states.moodList));
 
-                            //factory.log(moods.length);
+                            const defaultMoodName = factory.platform.alias['DefaultMood'] || "Off";
+                            const defaultMood = (moods || []).find(mood => mood.name === defaultMoodName)
+
                             for (const mood of moods) {
                                 // create a control for LightControllerV2MoodSwitch for each Mood of this LightControllerV2
                                 const moodSwitchControl = JSON.parse(JSON.stringify(control));
@@ -296,6 +339,7 @@ moduleexports.Factory.prototype.traverseSitemap = (jsonSitmap, factory) => {
                                 moodSwitchControl.parentType = control.type;
                                 moodSwitchControl.uuidActionOriginal = controlUuid;
                                 moodSwitchControl.mood = mood;
+                                moodSwitchControl.defaultMood = defaultMood;
                                 moodSwitchControl.type = 'LightControllerV2MoodSwitch';
                                 factory.itemList[moodSwitchControl.uuidAction] = moodSwitchControl;
                             }
