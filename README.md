@@ -12,7 +12,7 @@ Feature requests are always welcome!
 The plugin will be able to communicate with the following items from your Loxone setup:
   - Lights (Switches, Dimmers and RGB/ Smart-actor RGBW leds)
   - Sensors (Temperature, Humidty, Light, Motion, Contact, Leak and Smoke)*
-  - Switches (On/Off, Pushbutton, Stairwell,)
+  - Switches (On/Off, Pushbutton, Stairwell, Radio)
   - Doorbell notification*
   - Valve, Sprinklers*
   - HomeKit trigger*
