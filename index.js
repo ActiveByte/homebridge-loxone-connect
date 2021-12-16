@@ -89,7 +89,7 @@ function LoxPlatform(log, config) {
     }
 
     this.timedswitch_method = "pulse";
-    if (options['StairwellSwitch'] == "on") {
+    if (options['stairwellSwitch'] == "on") {
         this.timedswitch_method = "on";
     }
 
@@ -119,20 +119,7 @@ function LoxPlatform(log, config) {
 
 
     //* Alias *//
-    if (!config['alias']) {
-        config['alias'] = "";
-    }
-    const alias = config['alias'];
-
-    let aliases = ['Outlet', 'Lighting', 'Doorbell', 'Trigger', 'Contact', 'Motion', 'Brightness', 'Temperature', 'Humidity', 'Lock', 'Valve', 'Sprinklers', 'Fan', 'Leak', 'DefaultMood'];
-
-    aliases.forEach(function (item) {
-        if (!alias[item]) {
-            alias[item] = item;
-        }
-    })
-
-    this.alias = alias;
+    this.alias = config['alias'];
 
     //Also make a WS connection
     this.ws = new WSListener(platform);

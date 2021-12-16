@@ -32,7 +32,7 @@
                         "type": "string",
                         "description": "Optional, specify an array of interested rooms to filter on. If empty or not given, all elements are used. <br/> Example: specifying ['Kitchen', 'Bedroom'] will limit your bridge to only elements from those 2 rooms."
                     },
-                    "StairwellSwitch": {
+                    "stairwellSwitch": {
                         "type": "string",
                         "default": "pulse",
                         "enum": ["pulse","on"],

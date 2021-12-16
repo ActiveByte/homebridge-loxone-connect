@@ -127,27 +127,34 @@ moduleexports.Factory.prototype.parseSitemap = function(jsonSitemap) {
 
 moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, catList) => {
     const item = factory.itemList[itemId];
-    const alias = factory.alias;
-    //this function will make accesories more precise based on other attributes
+    
+    function alias(name) {
+        if (factory.alias !== undefined && name in factory.alias) {
+            return factory.alias[name];
+        } else {
+            return name;
+        }
+    }
 
+    //this function will make accesories more precise based on other attributes
     if (item.type == "InfoOnlyAnalog") {
-        if (item.name.startsWith(alias['Contact'])) {
+        if (item.name.startsWith(alias('Contact'))) {
             item.type = "ContactSensor"; 
-        } else if (item.name.startsWith(alias['Doorbell'])) {
+        } else if (item.name.startsWith(alias('Doorbell'))) {
             item.type = "Doorbell";
-        } else if (item.name.startsWith(alias['Motion'])) {
+        } else if (item.name.startsWith(alias('Motion'))) {
             item.type = "MotionSensor";
-        } else if (item.name.startsWith(alias['Brightness'])) {
+        } else if (item.name.startsWith(alias('Brightness'))) {
             item.type = "LightSensor";
-        } else if (item.name.startsWith(alias['Trigger'])) {
+        } else if (item.name.startsWith(alias('Trigger'))) {
             item.type = "Trigger";
-        }else if (item.name.startsWith(alias['Temperature'])) {
+        }else if (item.name.startsWith(alias('Temperature'))) {
             item.type = "TemperatureSensor";
-        }else if (item.name.startsWith(alias['Humidity'])) {
+        }else if (item.name.startsWith(alias('Humidity'))) {
             item.type = "HumiditySensor";
-        }else if (item.name.startsWith(alias['Smoke'])) {
+        }else if (item.name.startsWith(alias('Smoke'))) {
             item.type = "SmokeSensor";
-        }else if (item.name.startsWith(alias['Leak'])) {
+        }else if (item.name.startsWith(alias('Leak'))) {
             item.type = "LeakSensor";
         }
     }
@@ -273,9 +280,9 @@ moduleexports.Factory.prototype.traverseSitemap = (jsonSitmap, factory) => {
                                 if (control.subControls.hasOwnProperty(subControlUuid)) {
                                     const subControl = control.subControls[subControlUuid];
                                     subControl.parentType = control.type;
-
+                                    subControl.roomname = control.roomname;
                                     // Append the name of its parent control to the subControls name
-                                    subControl.name += (` of ${control.name}`);
+                                    subControl.name += (` from ${control.name}`);
                                     factory.itemList[subControlUuid] = subControl;
 
                                 }
@@ -289,7 +296,7 @@ moduleexports.Factory.prototype.traverseSitemap = (jsonSitmap, factory) => {
                                 const control = JSON.parse(JSON.stringify(radioControl));
                                 control.subControls = null;
                                 control.uuidAction = uuid + '/' + radioSwitch.id;
-                                control.name = 'Radio switch ' + radioSwitch.name + ' of ' + radioControl.name;
+                                control.name = 'Radio switch ' + radioSwitch.name + ' from ' + radioControl.name;
                                 control.parentType = radioControl.type;
                                 control.uuidActionOriginal = uuid;
                                 control.radio = radioSwitch;
@@ -335,7 +342,7 @@ moduleexports.Factory.prototype.traverseSitemap = (jsonSitmap, factory) => {
                                 const moodSwitchControl = JSON.parse(JSON.stringify(control));
                                 moodSwitchControl.subControls = null;
                                 moodSwitchControl.uuidAction = `${controlUuid}/${mood.id}`;
-                                moodSwitchControl.name = `Mood ${mood.name} of ${control.name}`;
+                                moodSwitchControl.name = `Mood ${mood.name} from ${control.name}`;
                                 moodSwitchControl.parentType = control.type;
                                 moodSwitchControl.uuidActionOriginal = controlUuid;
                                 moodSwitchControl.mood = mood;

@@ -61,7 +61,7 @@ See config-sample.json for an example configuration.
 | Parameter | Note |
 | --- | --- |
 | `rooms` | optional, specify an array of interested rooms to filter on. If empty or not given, all elements are used. <br/> Example: specifying "rooms" : ["Kitchen", "Bedroom"] will limit your bridge to only elements from those 2 rooms.  |
-| `StairwellSwitch` | optional, choose the switch behavior of the Stairwell Light Switch, default: "pulse".<br/><br/> Has 2 possible values: <br/> * pulse : Normal operation, light will stay on for fixed amount of time. This is the default in case not given. <br/> * on : Light will stay on as long as the switch is enabled. |
+| `stairwellSwitch` | optional, choose the switch behavior of the Stairwell Light Switch, default: "pulse".<br/><br/> Has 2 possible values: <br/> * pulse : Normal operation, light will stay on for fixed amount of time. This is the default in case not given. <br/> * on : Light will stay on as long as the switch is enabled. |
 | `moodSwitches` | optional, displays Loxone moods (wich are part of LightControllerV2 elements) as seperate buttons, default: "none". <br/><br/>  Has 3 possible values: <br/>* none : does not include moods. This is the default in case not given. <br/> * all : include moods as actionable item. <br/> * only : only include moods and filter out any other element. |
 | `radioSwitches` | optional, displays Loxone radio switches, default: "1". |
 | `alarmSystem` | optional, choose between instant and delayed activation of the alarm, default: "delayedon". <br/><br/> Has 2 possible values <br/> * delayedon : Alarm will be delayed. Default. <br/> * on : Alarm will be instantly on. |

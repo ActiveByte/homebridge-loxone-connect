@@ -1,6 +1,10 @@
 
 # Change Log
 
+## [1.1.4] - 2021/12/16
+
+- Bug fixes
+
 ## [1.1.3] - 2021/10/28
 
 - Fixed statup issue

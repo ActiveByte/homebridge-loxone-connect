@@ -59,7 +59,7 @@ TimedSwitchItem.prototype.setItemState = function(value, callback) {
         command = 'Off'; // off
     }
 
-    this.log(`[StairwellSwitch] HomeKit - send message to ${this.name}: ${command}`);
+    this.log(`[stairwellSwitch] HomeKit - send message to ${this.name}: ${command}`);
     this.platform.ws.sendCommand(this.uuidAction, command);
     callback();
 
