@@ -1,5 +1,8 @@
 
 # Change Log
+## [1.2.0] - 2021/12/18
+
+- Moved from node-lox-ws-api to lxcommunicator (This fixes the authentication issues some users are experiencing and improves response times)
 
 ## [1.1.4] - 2021/12/16
 

@@ -43,16 +43,15 @@ module.exports = homebridge => {
     Utility.addSupportTo(ItemFactory.Outlet, ItemFactory.Switch);
     Utility.addSupportTo(ItemFactory.Pushbutton, ItemFactory.Switch);
     Utility.addSupportTo(ItemFactory.Fan, ItemFactory.Switch);
-    
+
     //Add childs of shower
     Utility.addSupportTo(ItemFactory.Sprinkler, ItemFactory.Valve);
 
-    homebridge.registerPlatform("homebridge-loxoneWs", "LoxoneWs", LoxPlatform);
+    homebridge.registerPlatform("homebridge-loxone-connect", "LoxoneWs", LoxPlatform);
 };
 
 // Platform constructor
 function LoxPlatform(log, config) {
-    const platform = this;
     this.log = log;
     this.config = config;
     this.protocol = "http";
@@ -120,29 +119,17 @@ function LoxPlatform(log, config) {
 
     //* Alias *//
     this.alias = config['alias'];
-
-    //Also make a WS connection
-    this.ws = new WSListener(platform);
 }
 
-LoxPlatform.prototype.accessories = function (callback) {
+LoxPlatform.prototype.accessories = async function (callback) {
+    const platform = this;
     const that = this;
-    this.log("Getting Loxone configuration.");
+
+    this.ws = new WSListener(platform);
+
+    while (!this.ws.loxdata) // Wait for json data
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
     const itemFactory = new ItemFactory.Factory(this, Homebridge);
-    const url = itemFactory.sitemapUrl();
-    this.log("Platform - Waiting 8 seconds until initial state is retrieved via WebSocket.");
-    setTimeout(() => {
-        const anonymizedUrl = url.substr(0, url.indexOf("//")) + "//"+ url.substr(url.indexOf("@") + 1);
-        that.log(`Platform - Retrieving initial config from ${anonymizedUrl}`);
-        request.get({
-            url,
-            json: true
-        }, (err, response, json) => {
-            if (!err && response.statusCode === 200) {
-                callback(itemFactory.parseSitemap(json));
-            } else {
-                that.log("Platform - There was a problem connecting to Loxone.");
-            }
-        })
-    }, 8000);
+    callback(itemFactory.parseSitemap(this.ws.loxdata));
 };

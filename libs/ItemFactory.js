@@ -39,16 +39,6 @@ moduleexports.Factory = function(LoxPlatform, homebridge) {
     this.roomList = {};
 };
 
-moduleexports.Factory.prototype.sitemapUrl = function() {
-    let serverString = this.platform.host;
-    const serverPort = this.platform.port;
-    if (this.platform.username && this.platform.password) {
-        serverString = `${encodeURIComponent(this.platform.username)}:${encodeURIComponent(this.platform.password)}@${serverString}:${serverPort}`;
-    }
-
-    return `${this.platform.protocol}://${serverString}/data/LoxApp3.json`;
-};
-
 moduleexports.Factory.prototype.parseSitemap = function(jsonSitemap) {
     //this is the function that gets called by index.js
     //first, parse the Loxone JSON that holds all controls
@@ -127,7 +117,7 @@ moduleexports.Factory.prototype.parseSitemap = function(jsonSitemap) {
 
 moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, catList) => {
     const item = factory.itemList[itemId];
-    
+
     function alias(name) {
         if (factory.alias !== undefined && name in factory.alias) {
             return factory.alias[name];

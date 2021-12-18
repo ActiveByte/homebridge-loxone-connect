@@ -1,7 +1,13 @@
-const LoxoneWebSocket = require('node-lox-ws-api');
+const LxCommunicator = require('lxcommunicator');
+const WebSocketConfig = LxCommunicator.WebSocketConfig;
+const {
+    v4: uuidv4
+} = require('uuid');
 
-const WSListener = function(platform) {
-    this.ws = undefined;
+const WSListener = function (platform) {
+    this.socket = undefined;
+    this.loxdata = undefined;
+
     this.log = platform.log;
 
     this.host = platform.host;
@@ -17,116 +23,134 @@ const WSListener = function(platform) {
     this.startListener();
 };
 
-WSListener.prototype.startListener = function () {
+WSListener.prototype.startListener = async function () {
     const self = this;
 
-    if (typeof this.ws == 'undefined') {
-        //self.log(`New WS: ${this.host}:${this.port}`);
-        this.ws = new LoxoneWebSocket(`${this.host}:${this.port}`, this.username, this.password, true, 'Token-Enc');
-        this.ws.connect();
+    if (typeof this.socket == 'undefined') {
+        this.uuid = uuidv4();
+
+        const webSocketConfig = new WebSocketConfig(WebSocketConfig.protocol.WS,
+            this.uuid, 'homebridge', WebSocketConfig.permission.APP, false);
+
+        function handleAnyEvent(uuid, message) {
+            self.log.debug("WS: update event " + uuid + ":" + message);
+            self.uuidCache[uuid] = message;
+            if (typeof self.uuidCallbacks[uuid] != 'undefined') {
+                for (let r = 0; r < self.uuidCallbacks[uuid].length; r++) {
+                    self.uuidCallbacks[uuid][r](message);
+                }
+            }
+        }
+
+        webSocketConfig.delegate = {
+            socketOnDataProgress: (socket, progress) => {
+                this.log.debug('data progress ' + progress);
+            },
+            socketOnTokenConfirmed: (socket, response) => {
+                this.log.debug('token confirmed');
+            },
+            socketOnTokenReceived: (socket, result) => {
+                this.log.debug('token received');
+            },
+            socketOnConnectionClosed: (socket, code) => {
+                this.log.info('Socket closed ' + code);
+
+                if (code != LxCommunicator.SupportCode.WEBSOCKET_MANUAL_CLOSE) {
+                    this.reconnect();
+                }
+            },
+            socketOnEventReceived: (socket, events, type) => {
+                this.log.debug(`socket event received ${type} ${JSON.stringify(events)}`);
+                for (const evt of events) {
+                    switch (type) {
+                        case LxCommunicator.BinaryEvent.Type.EVENT:
+                            handleAnyEvent(evt.uuid, evt.value);
+                            break;
+                        case LxCommunicator.BinaryEvent.Type.EVENTTEXT:
+                            handleAnyEvent(evt.uuid, evt.text);
+                            break;
+                        case LxCommunicator.BinaryEvent.Type.EVENT:
+                            handleAnyEvent(evt.uuid, evt);
+                            break;
+                        case LxCommunicator.BinaryEvent.Type.WEATHER:
+                            handleAnyEvent(evt.uuid, evt);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        };
+
+        this.socket = new LxCommunicator.WebSocket(webSocketConfig);
+
+        const success = await this.connect();
+
+        if (!success) {
+            this.reconnect();
+        }
     }
-
-    this.ws.on('close_failed', () => {
-        self.log("WS: close failed");
-    });
-
-    this.ws.on('connect', () => {
-        self.log("WS: connect");
-    });
-
-    this.ws.on('connect_failed', () => {
-      //throw new Error("WS: connect failed");
-      //connection can drop sometimes, try to reconnect silently (max once per 10 seconds)
-      self.log("WS: connection failed, reconnecting...");
-      setTimeout(() => { self.ws.connect(); }, 10000);
-    });
-
-    this.ws.on('connection_error', error => {
-      //throw new Error("WS: connection error: " + error);
-      //connection can drop sometimes, try to reconnect silently (max once per 10 seconds)
-      self.log(`WS: connection error, reconnecting...${error}`);
-      setTimeout(() => { self.ws.connect(); }, 10000);
-    });
-
-    this.ws.on('send', message => {
-        //self.log("WS: message: "+ message);
-    });
-
-    this.ws.on('handle_message', message => {
-        //self.log("WS: handle message: " + JSON.stringify(message));
-    });
-
-    this.ws.on('message_header', message => {
-        //self.log("WS: message header: " + JSON.stringify(message));
-    });
-
-    this.ws.on('message_text', message => {
-        //self.log("WS: message text " + message);
-    });
-
-    this.ws.on('message_file', message => {
-        //self.log("WS: message file " + message);
-    });
-
-    this.ws.on('update_event_value', (uuid, message) => {
-        //self.log("WS: update value " + uuid + ":" + message);
-        self.uuidCache[uuid] = message;
-        if(typeof self.uuidCallbacks[uuid] != 'undefined') {
-            for (let r = 0; r < self.uuidCallbacks[uuid].length; r++) {
-                self.uuidCallbacks[uuid][r](message);
-            }
-        }
-    });
-
-    this.ws.on('update_event_text', (uuid, message) => {
-        //self.log("WS: update event text " + uuid + ":" + message);
-        self.uuidCache[uuid] = message;
-        //self.log('cache now contains ' + Object.keys(self.uuidCache).length + ' items');
-        if(typeof self.uuidCallbacks[uuid] != 'undefined') {
-            for (let r = 0; r < self.uuidCallbacks[uuid].length; r++) {
-                self.uuidCallbacks[uuid][r](message);
-            }
-        }
-    });
-
-    this.ws.on('update_event_daytimer', (uuid, message) => {
-        //self.log("WS: update event timer " + uuid + ":" + message);
-        if(typeof self.uuidCallbacks[uuid] != 'undefined') {
-            for (let r = 0; r < self.uuidCallbacks[uuid].length; r++) {
-                self.uuidCallbacks[uuid][r](message);
-            }
-        }
-    });
-
-    this.ws.on('update_event_weather', (uuid, message) => {
-        //self.log("WS: update event weather " + uuid + ":" + message);
-        if(typeof self.uuidCallbacks[uuid] != 'undefined') {
-            for (let r = 0; r < self.uuidCallbacks[uuid].length; r++) {
-                self.uuidCallbacks[uuid][r](message);
-            }
-        }
-    });
-
-    this.ws.on('message_invalid', message => {
-        self.log(`WS: message invalid ${message}`);
-    });
-
-    this.ws.on('keepalive', time => {
-        //self.log(`WS: keepalive ${time}`);
-    });
 
 };
 
+WSListener.prototype.connect = async function () {
+    this.log.info("Trying to connect to Miniserver");
+
+    try {
+        await this.socket.open(this.host + ':' + this.port, this.username, this.password);
+    } catch (error) {
+        this.log.error(`Couldn't open socket: ${error}`);
+        return false;
+    }
+
+    let file;
+    try {
+        file = await this.socket.send("data/LoxAPP3.json");
+    } catch (error) {
+        this.log.error(`Couldn't get structure file: ${error}`);
+        this.socket.close();
+        return false;
+    }
+    this.loxdata = JSON.parse(file);
+
+    try {
+        await this.socket.send("jdev/sps/enablebinstatusupdate");
+    } catch (error) {
+        this.log.error(`Couldn't enable status updates: ${error}`);
+        this.socket.close();
+        return false;
+    }
+
+    this.log.info("Connected");
+    return true;
+}
+
+WSListener.prototype.reconnect = function () {
+    const self = this;
+
+    this.log.info("Reconnecting in 10 seconds...");
+
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function runTimer() {
+        await delay(10000);
+        const success = await self.connect();
+        if (!success) {
+            self.reconnect();
+        }
+    }
+    runTimer();
+}
+
 WSListener.prototype.registerListenerForUUID = function (uuid, callback) {
-    //function that the Item classes will call to listen in on a specific UUID message
-   // console.log("Registering listener for UUID " + uuid);
     if (uuid in this.uuidCallbacks) {
         this.uuidCallbacks[uuid].push(callback);
     } else {
         this.uuidCallbacks[uuid] = [callback];
     }
 
-    // if we already have a state cached for this uuid, broadcast it to all currently registered callbacks
     if (uuid in this.uuidCache) {
         for (let r = 0; r < this.uuidCallbacks[uuid].length; r++) {
             this.uuidCallbacks[uuid][r](this.uuidCache[uuid]);
@@ -134,8 +158,8 @@ WSListener.prototype.registerListenerForUUID = function (uuid, callback) {
     }
 };
 
-WSListener.prototype.sendCommand = function (uuid, command) {
-    this.ws.send_cmd(uuid, command);
+WSListener.prototype.sendCommand = function (uuid, action) {
+    this.socket.send(`jdev/sps/io/${uuid}/${action}`, 2);
 };
 
 WSListener.prototype.getLastCachedValue = function (uuid) {
