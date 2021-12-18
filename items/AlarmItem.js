@@ -1,5 +1,3 @@
-var request = require("request");
-
 var Alarm = function (widget, platform, homebridge) {
     Characteristic = homebridge.hap.Characteristic;
 

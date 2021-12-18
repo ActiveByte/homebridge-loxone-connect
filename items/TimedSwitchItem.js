@@ -1,5 +1,3 @@
-const request = require("request");
-
 const TimedSwitchItem = function(widget,platform,homebridge) {
 
     this.platform = platform;

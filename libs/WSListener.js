@@ -99,7 +99,7 @@ WSListener.prototype.connect = async function () {
     try {
         await this.socket.open(this.host + ':' + this.port, this.username, this.password);
     } catch (error) {
-        this.log.error(`Couldn't open socket: ${error}`);
+        this.log.error(`Couldn't open socket: ` + error);
         return false;
     }
 
@@ -107,7 +107,7 @@ WSListener.prototype.connect = async function () {
     try {
         file = await this.socket.send("data/LoxAPP3.json");
     } catch (error) {
-        this.log.error(`Couldn't get structure file: ${error}`);
+        this.log.error(`Couldn't get structure file: ` + error);
         this.socket.close();
         return false;
     }
@@ -116,7 +116,7 @@ WSListener.prototype.connect = async function () {
     try {
         await this.socket.send("jdev/sps/enablebinstatusupdate");
     } catch (error) {
-        this.log.error(`Couldn't enable status updates: ${error}`);
+        this.log.error(`Couldn't enable status updates: ` + error);
         this.socket.close();
         return false;
     }

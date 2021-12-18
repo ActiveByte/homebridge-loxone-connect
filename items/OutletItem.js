@@ -1,5 +1,3 @@
-const request = require("request");
-
 const OutletItem = function(widget,platform,homebridge) {
     OutletItem.super_.call(this, widget,platform,homebridge);
 };

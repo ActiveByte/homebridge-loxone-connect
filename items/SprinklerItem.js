@@ -1,5 +1,3 @@
-const request = require("request");
-
 const Sprinklertem = function(widget,platform,homebridge) {
     Sprinklertem.super_.call(this, widget,platform,homebridge);
 };

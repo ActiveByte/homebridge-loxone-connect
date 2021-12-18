@@ -1,5 +1,3 @@
-const request = require("request");
-
 const ValveItem = function (widget, platform, homebridge) {
     Characteristic = homebridge.hap.Characteristic;
     

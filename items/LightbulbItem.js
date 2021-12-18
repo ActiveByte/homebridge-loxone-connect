@@ -1,5 +1,3 @@
-const request = require("request");
-
 const LightbulbItem = function(widget,platform,homebridge) {
     LightbulbItem.super_.call(this, widget,platform,homebridge);
 };

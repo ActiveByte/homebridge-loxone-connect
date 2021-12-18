@@ -1,5 +1,3 @@
-const request = require("request");
-
 const HumiditySensorItem = function(widget,platform,homebridge) {
 
     this.platform = platform;

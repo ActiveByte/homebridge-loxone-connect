@@ -1,7 +1,4 @@
 "use strict";
-
-var request = require("request");
-
 const DEFAULT_SWITCH_ID = 0
 
 var RadioSwitchItem = function (widget, platform, homebridge) {

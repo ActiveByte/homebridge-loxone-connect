@@ -1,5 +1,3 @@
-const request = require("request");
-
 const BlindsItem = function(widget,platform,homebridge) {
 
     this.platform = platform;

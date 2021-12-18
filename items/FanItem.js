@@ -1,5 +1,3 @@
-const request = require("request");
-
 const FanItem = function(widget,platform,homebridge) {
     FanItem.super_.call(this, widget,platform,homebridge);
 };
