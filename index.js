@@ -1,5 +1,4 @@
 let Accessory, Service, Characteristic, UUIDGen;
-const request = require("request");
 const ItemFactory = require('./libs/ItemFactory.js');
 const Utility = require('./libs/Utility.js');
 const WSListener = require('./libs/WSListener.js');
@@ -123,7 +122,6 @@ function LoxPlatform(log, config) {
 
 LoxPlatform.prototype.accessories = async function (callback) {
     const platform = this;
-    const that = this;
 
     this.ws = new WSListener(platform);
 
