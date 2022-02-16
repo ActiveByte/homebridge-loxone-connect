@@ -10,7 +10,7 @@ const ColorItem = function(widget,platform,homebridge) {
     this.power = false;
     this.colortemperature = 153;
     this.lastsetmode = 'color';
-    this.lastupdate = 0;
+    this.lastUpdate = 0;
     ColorItem.super_.call(this, widget,platform,homebridge);
 };
 
@@ -194,9 +194,7 @@ function clamp( x, min, max ) {
 }
 
 ColorItem.prototype.callBack = function(value) { // Update info from Loxone to Homebridge
-    let timepast = Date.now() - this.lastupdate;
-    //console.log(`timepast: ${timepast}`);
-    if(timepast > 1000){
+    if ((Date.now() - this.lastUpdate) > 500) { // Ignore callback when received change from homekit
 
     //incoming value is a HSV string that needs to be parsed
     let m;
@@ -342,6 +340,7 @@ ColorItem.prototype.setItemColorTemperatureState = function(value, callback) {
 };
 
 ColorItem.prototype.setItemPowerState = function(value, callback) {
+    this.lastUpdate = Date.now();
     //sending new power state to loxone
     if (!value) {
         this.brightness = 0;
@@ -357,8 +356,6 @@ ColorItem.prototype.setItemHueState = function(value, callback) {
     this.lastsetmode = 'color';
     this.hue = parseInt(value);
 
-    this.lastupdate = Date.now();
-
     this.setColorState(callback);
 };
 
@@ -366,8 +363,6 @@ ColorItem.prototype.setItemSaturationState = function(value, callback) {
     //this.log(`setItemSaturationState: ${value}`);
     this.lastsetmode = 'color';
     this.saturation = parseInt(value);
-    
-    this.lastupdate = Date.now();
     
     this.setColorState(callback);
 };
@@ -379,6 +374,8 @@ ColorItem.prototype.setItemBrightnessState = function(value, callback) {
 };
 
 ColorItem.prototype.setColorState = function(callback) {
+    this.lastUpdate = Date.now();
+
     //compose hsv or temp string
     let command = '';
     if (this.lastsetmode == 'color') {
@@ -392,9 +389,10 @@ ColorItem.prototype.setColorState = function(callback) {
     this.log(`[Color] HomeKit - send message to ${this.name} ${command}`);
     this.platform.ws.sendCommand(this.uuidAction, command);
 
+    this.power = this.brightness > 0;
+    
     callback();
 };
 
 module.exports = ColorItem;
-
 

@@ -1,5 +1,9 @@
 
 # Change Log
+## [1.3.0] - 2021/02/16
+
+- Solved an issue where a dimmer would go to 100% instead of the requested brightness in some circumstances.
+
 ## [1.2.0] - 2021/12/18
 
 - Moved from node-lox-ws-api to lxcommunicator (This fixes the authentication issues some users are experiencing and improves response times)

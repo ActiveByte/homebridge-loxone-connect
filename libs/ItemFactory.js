@@ -200,7 +200,7 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
             item.type = "Lightbulb";
         } else if (item.type === "ColorPickerV2") {
             item.type = "Colorpicker";
-        }
+        } 
     }
 
     if (item.type === alias['Gate']) {
