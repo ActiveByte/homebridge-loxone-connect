@@ -71,9 +71,9 @@ DimmerItem.prototype.setItemState = function (value, callback) {
 DimmerItem.prototype.setItemPowerState = async function (value, callback) {
     this.lastUpdate = Date.now();
     
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 100));
 
-    if ((Date.now() - this.lastBrightnessUpdate) > 20) {
+    if ((Date.now() - this.lastBrightnessUpdate) > 105) {
         this.log(`[Dimmer] HomeKit - send on/off message to ${this.name}: ${value}`);
         const command = (value == '1') ? 'On' : 'Off';
             this.platform.ws.sendCommand(this.uuidAction, command);
