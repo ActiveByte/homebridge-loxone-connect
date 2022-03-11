@@ -4,7 +4,7 @@ const ShuttersItem = function(widget,platform,homebridge) {
     this.platform = platform;
     this.uuidAction = widget.uuidAction; // to control a shutter, use the uuidAction
     this.positionUuid = widget.states.position; // a shutter always has a state called position, which is the uuid which will receive the event to read the current postion
-    this.sladeUuid = widget.states.shadePosition; // a shutter always has a state called shadePosition, which is the uuid which will receive the event to read the current slate postion
+    this.slateUuid = widget.states.shadePosition; // a shutter always has a state called shadePosition, which is the uuid which will receive the event to read the current slate postion
     this.initialValue = true;
     this.initialSlateValue = true;
     this.inControl = false;
@@ -26,7 +26,7 @@ const ShuttersItem = function(widget,platform,homebridge) {
 // Register a listener to be notified of changes in this items value
 ShuttersItem.prototype.initListener = function() {
     this.platform.ws.registerListenerForUUID(this.positionUuid, this.positionCallback.bind(this));
-    this.platform.ws.registerListenerForUUID(this.sladeUuid, this.slateCallback.bind(this));
+    this.platform.ws.registerListenerForUUID(this.slateUuid, this.slateCallback.bind(this));
 };
 
 ShuttersItem.prototype.positionCallback = function(value) {
@@ -188,15 +188,16 @@ ShuttersItem.prototype.setSlate = function(value, callback) {
 
 ShuttersItem.prototype.setBoth = function(positionValue, slateValue, callback) {
     // if the shutter is all the way up ignore the slate position to prevent lowering after fully up
+    var newSlateValue = slateValue
     if (positionValue < 3) {
-        slateValue = -90;
+        newSlateValue = -90;
     } else if (this.startedPosition < 3 && this.startedSlatePosition < -87) {
-        slateValue = 90;
+        newSlateValue = 90;
     }
 
     let loxonePositionValue = 100 - parseInt(positionValue);
 
-    let loxoneSlateValue = parseInt((slateValue + 90) * 100 / 180);
+    let loxoneSlateValue = parseInt((newSlateValue + 90) * 100 / 180);
 
     let command = `manualPosBlind/${loxonePositionValue}/${loxoneSlateValue}`;
 
