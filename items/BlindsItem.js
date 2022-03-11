@@ -115,10 +115,6 @@ BlindsItem.prototype.setItem = function(value, callback) {
     let command = 0;
     if (typeof value === 'boolean') {
         command = value ? 'FullUp' : 'FullDown';
-    } else if (typeof value == 0) {
-        command = 'FullDown';
-    } else if (typeof value == 100) {
-        command = 'FullUp';
     } else {
         //reverse again the value
         command = `ManualPosition/${100 - value}`;
