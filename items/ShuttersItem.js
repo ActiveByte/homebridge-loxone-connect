@@ -2,9 +2,9 @@
 const ShuttersItem = function(widget,platform,homebridge) {
 
     this.platform = platform;
-    this.uuidAction = widget.uuidAction; //to control a dimmer, use the uuidAction
-    this.positionUuid = widget.states.position; //a blind always has a state called position, which is the uuid which will receive the event to read
-    this.sladeUuid = widget.states.shadePosition; 
+    this.uuidAction = widget.uuidAction; // to control a shutter, use the uuidAction
+    this.positionUuid = widget.states.position; // a shutter always has a state called position, which is the uuid which will receive the event to read the current postion
+    this.sladeUuid = widget.states.shadePosition; // a shutter always has a state called shadePosition, which is the uuid which will receive the event to read the current slate postion
     this.initialValue = true;
     this.initialSlateValue = true;
     this.inControl = false;
@@ -13,10 +13,10 @@ const ShuttersItem = function(widget,platform,homebridge) {
     this.currentPosition = 100;
     this.targetPosition = 100;
     this.startedPosition = 100;
-    //-90 means outer facing edge higher than window facing edge
-    this.currentSlatePosition = -90;
-    this.targetSlatePosition = -90;
-    this.startedSlatePosition = -90;
+    // 90 means the outer facing edge lower than the inner facing edge
+    this.currentSlatePosition = 90;
+    this.targetSlatePosition = 90;
+    this.startedSlatePosition = 90;
 
     ShuttersItem.super_.call(this, widget,platform,homebridge);
 
@@ -159,7 +159,13 @@ ShuttersItem.prototype.setItem = function(value, callback) {
     this.startedPosition = this.currentPosition;
     this.targetPosition = parseInt(value);
 
-    this.setBoth(value, this.targetSlatePosition, callback);
+    // if the shutter is all the way up ignore the slate position to prevent lowering after fully up
+    let slatePosition = this.targetSlatePosition;
+    if (value < 3) {
+        slatePosition = -90
+    }
+
+    this.setBoth(value, slatePosition, callback);
 };
 
 ShuttersItem.prototype.getSlateTargetPosition = function(callback) {
