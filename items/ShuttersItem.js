@@ -3,8 +3,10 @@ const ShuttersItem = function(widget,platform,homebridge) {
 
     this.platform = platform;
     this.uuidAction = widget.uuidAction; //to control a dimmer, use the uuidAction
-    this.stateUuid = widget.states.position; //a blind always has a state called position, which is the uuid which will receive the event to read
+    this.positionUuid = widget.states.position; //a blind always has a state called position, which is the uuid which will receive the event to read
+    this.sladeUuid = widget.states.shadePosition; 
     this.initialValue = true;
+    this.initialSlateValue = true;
     this.inControl = false;
 
     //100 means fully open
@@ -22,11 +24,11 @@ const ShuttersItem = function(widget,platform,homebridge) {
 
 // Register a listener to be notified of changes in this items value
 ShuttersItem.prototype.initListener = function() {
-    this.log(`[Shutters] Register UUID: ${this.stateUuid}`);
-    this.platform.ws.registerListenerForUUID(this.stateUuid, this.callBack.bind(this));
+    this.platform.ws.registerListenerForUUID(this.positionUuid, this.positionCallback.bind(this));
+    this.platform.ws.registerListenerForUUID(this.sladeUuid, this.slateCallback.bind(this));
 };
 
-ShuttersItem.prototype.callBack = function(value) {
+ShuttersItem.prototype.positionCallback = function(value) {
     //function that gets called by the registered ws listener
     //console.log("Got new state for blind " + value);
 
@@ -69,6 +71,36 @@ ShuttersItem.prototype.callBack = function(value) {
 
     this.otherService
         .getCharacteristic(this.homebridge.hap.Characteristic.CurrentPosition)
+        .updateValue(value);
+};
+
+ShuttersItem.prototype.slateCallback = function(value) {
+    //function that gets called by the registered ws listener
+    //console.log("Got new state for blind " + value);
+
+    //incomign values from blinds are decimal (0 - 1) but HomeKit is from -90 to +90
+    value = value * 180 - 90;
+    
+    value = parseInt(value);
+
+    if(this.initialSlateValue) {
+        //this is the initial value. therfore, also set current targetValue on the same
+        this.targetSlatePosition = value;
+        this.initialSlateValue = false;
+    }
+    //if extenal actor changed the blinds, it's important that we set the targetvalue to the new real situation
+    if(!this.inControl) {
+        this.targetSlatePosition = value;
+    }
+
+    this.currentPosition = value;
+
+    this.otherService
+       .getCharacteristic(this.homebridge.hap.Characteristic.TargetHorizontalTiltAngle)
+       .updateValue(parseInt(this.targetSlatePosition));
+
+    this.otherService
+        .getCharacteristic(this.homebridge.hap.Characteristic.CurrentHorizontalTiltAngle)
         .updateValue(value);
 };
 

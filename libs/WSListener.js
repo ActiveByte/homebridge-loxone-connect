@@ -33,7 +33,7 @@ WSListener.prototype.startListener = async function () {
             this.uuid, 'homebridge', WebSocketConfig.permission.APP, false);
 
         function handleAnyEvent(uuid, message) {
-            self.log("WS: update event " + uuid + ":" + message);
+            self.log.debug("WS: update event " + uuid + ":" + message);
             self.uuidCache[uuid] = message;
             if (typeof self.uuidCallbacks[uuid] != 'undefined') {
                 for (let r = 0; r < self.uuidCallbacks[uuid].length; r++) {
