@@ -13,6 +13,7 @@ const ShuttersItem = function(widget,platform,homebridge) {
     this.startedPosition = 100;
     this.currentSlatePosition = 0;
     this.targetSlatePosition = 0;
+    this.startedSlatePosition = 0;
 
     ShuttersItem.super_.call(this, widget,platform,homebridge);
 
@@ -85,12 +86,12 @@ ShuttersItem.prototype.getOtherServices = function() {
 
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.CurrentHorizontalTiltAngle)
         .on('get', this.getSlateCurrentPosition.bind(this))
-        .updateValue(this.currentPosition);
+        .updateValue(this.currentSlatePosition);
 
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.TargetHorizontalTiltAngle)
         .on('set', this.setSlate.bind(this))
         .on('get', this.getSlateTargetPosition.bind(this))
-        .updateValue(this.currentPosition);
+        .updateValue(this.currentSlatePosition);
 
     otherService.getCharacteristic(this.homebridge.hap.Characteristic.PositionState)
         .on('get', this.getItemPositionState.bind(this))
@@ -157,14 +158,19 @@ ShuttersItem.prototype.setSlate = function(value, callback) {
     //set a flag that we're in control. this way we'll know if the action is coming from Homekit or from external actor (eg Loxone app)
     //this flag is removed after 20 seconds (increase if you have really long or slow blinds ;)
     this.inControl = true;
-    setTimeout(() => { self.inControl = false; }, 20000);
+    setTimeout(() => { self.inControl = false; }, 55000);
 
-    this.startedPosition = this.currentPosition;
-    this.targetPosition = parseInt(value);
+    this.startedSlatePosition = this.currentSlatePosition;
+    this.targetSlatePosition = parseInt(value);
 
-    let command = `manualLamelle/${100 - value}`;
+    let loxoneValue = 0;
+    if (value > 0) {
+        loxoneValue = value * 100/90;
+    }
 
-    this.log(`[Blinds] HomeKit - send message to ${this.name}: ${command}`);
+    let command = `manualLamelle/${loxoneValue}`;
+
+    this.log(`[Shutters] HomeKit - send message to ${this.name}: ${command}: HomeKit value: ${value} `);
     this.platform.ws.sendCommand(this.uuidAction, command);
     callback();
 
