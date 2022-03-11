@@ -159,13 +159,7 @@ ShuttersItem.prototype.setItem = function(value, callback) {
     this.startedPosition = this.currentPosition;
     this.targetPosition = parseInt(value);
 
-    // if the shutter is all the way up ignore the slate position to prevent lowering after fully up
-    let slatePosition = this.targetSlatePosition;
-    if (value < 3) {
-        slatePosition = -90
-    }
-
-    this.setBoth(value, slatePosition, callback);
+    this.setBoth(value, this.targetSlatePosition, callback);
 };
 
 ShuttersItem.prototype.getSlateTargetPosition = function(callback) {
@@ -193,6 +187,13 @@ ShuttersItem.prototype.setSlate = function(value, callback) {
 };
 
 ShuttersItem.prototype.setBoth = function(positionValue, slateValue, callback) {
+    // if the shutter is all the way up ignore the slate position to prevent lowering after fully up
+    if (positionValue < 3) {
+        slateValue = -90;
+    } else if (this.startedPosition < 3 && this.startedSlatePosition < -87) {
+        slateValue = 90;
+    }
+
     let loxonePositionValue = 100 - parseInt(positionValue);
 
     let loxoneSlateValue = parseInt((slateValue + 90) * 100 / 180);
