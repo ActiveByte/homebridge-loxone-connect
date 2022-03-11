@@ -157,6 +157,7 @@ ShuttersItem.prototype.setItem = function(value, callback) {
     setTimeout(() => { self.inControl = false; }, 55000);
 
     this.startedPosition = this.currentPosition;
+    this.startedSlatePosition = this.currentSlatePosition;
     this.targetPosition = parseInt(value);
 
     this.setBoth(value, this.targetSlatePosition, callback);
@@ -180,6 +181,7 @@ ShuttersItem.prototype.setSlate = function(value, callback) {
     this.inControl = true;
     setTimeout(() => { self.inControl = false; }, 2400);
 
+    this.startedPosition = this.currentPosition;
     this.startedSlatePosition = this.currentSlatePosition;
     this.targetSlatePosition = parseInt(value);
 
@@ -191,10 +193,10 @@ ShuttersItem.prototype.setBoth = function(positionValue, slateValue, callback) {
     var newSlateValue = slateValue
     if (positionValue > 97) {
         newSlateValue = -90;
-        this.targetSlatePosition = newSlateValue;
+        this.targetSlatePosition = parseInt(newSlateValue);
     } else if (this.startedPosition > 97 && this.startedSlatePosition < -87) {
         newSlateValue = 90;
-        this.targetSlatePosition = newSlateValue;
+        this.targetSlatePosition = parseInt(newSlateValue);
     }
 
     let loxonePositionValue = 100 - parseInt(positionValue);
