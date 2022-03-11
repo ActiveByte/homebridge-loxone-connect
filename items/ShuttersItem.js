@@ -13,9 +13,10 @@ const ShuttersItem = function(widget,platform,homebridge) {
     this.currentPosition = 100;
     this.targetPosition = 100;
     this.startedPosition = 100;
-    this.currentSlatePosition = 0;
-    this.targetSlatePosition = 0;
-    this.startedSlatePosition = 0;
+    //-90 means outer facing edge higher than window facing edge
+    this.currentSlatePosition = -90;
+    this.targetSlatePosition = -90;
+    this.startedSlatePosition = -90;
 
     ShuttersItem.super_.call(this, widget,platform,homebridge);
 
@@ -93,7 +94,7 @@ ShuttersItem.prototype.slateCallback = function(value) {
         this.targetSlatePosition = value;
     }
 
-    this.currentPosition = value;
+    this.currentSlatePosition = value;
 
     this.otherService
        .getCharacteristic(this.homebridge.hap.Characteristic.TargetHorizontalTiltAngle)
