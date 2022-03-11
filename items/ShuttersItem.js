@@ -177,7 +177,7 @@ ShuttersItem.prototype.setSlate = function(value, callback) {
     //set a flag that we're in control. this way we'll know if the action is coming from Homekit or from external actor (eg Loxone app)
     //this flag is removed after 20 seconds (increase if you have really long or slow blinds ;)
     this.inControl = true;
-    setTimeout(() => { self.inControl = false; }, 600);
+    setTimeout(() => { self.inControl = false; }, 2400);
 
     this.startedSlatePosition = this.currentSlatePosition;
     this.targetSlatePosition = parseInt(value);
@@ -188,10 +188,7 @@ ShuttersItem.prototype.setSlate = function(value, callback) {
 ShuttersItem.prototype.setBoth = function(positionValue, slateValue, callback) {
     let loxonePositionValue = 100 - parseInt(positionValue);
 
-    let loxoneSlateValue = 0;
-    if (slateValue > 0) {
-        loxoneSlateValue = parseInt(slateValue * 100/90);
-    }
+    let loxoneSlateValue = parseInt((slateValue + 90) * 100 / 180);
 
     let command = `manualPosBlind/${loxonePositionValue}/${loxoneSlateValue}`;
 

@@ -107,7 +107,7 @@ BlindsItem.prototype.setItem = function(value, callback) {
     //set a flag that we're in control. this way we'll know if the action is coming from Homekit or from external actor (eg Loxone app)
     //this flag is removed after 20 seconds (increase if you have really long or slow blinds ;)
     this.inControl = true;
-    setTimeout(() => { self.inControl = false; }, 20000);
+    setTimeout(() => { self.inControl = false; }, 34000);
 
     this.startedPosition = this.currentPosition;
     this.targetPosition = parseInt(value);
