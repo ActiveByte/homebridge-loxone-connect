@@ -121,7 +121,7 @@ ShuttersItem.prototype.setItem = function(value, callback) {
     //set a flag that we're in control. this way we'll know if the action is coming from Homekit or from external actor (eg Loxone app)
     //this flag is removed after 20 seconds (increase if you have really long or slow blinds ;)
     this.inControl = true;
-    setTimeout(() => { self.inControl = false; }, 20000);
+    setTimeout(() => { self.inControl = false; }, 55000);
 
     this.startedPosition = this.currentPosition;
     this.targetPosition = parseInt(value);
@@ -154,18 +154,6 @@ ShuttersItem.prototype.setSlate = function(value, callback) {
 };
 
 ShuttersItem.prototype.setBoth = function(positionValue, slateValue, callback) {
-
-    //sending new state (pct closed) to loxone
-    const self = this;
-
-    //set a flag that we're in control. this way we'll know if the action is coming from Homekit or from external actor (eg Loxone app)
-    //this flag is removed after 20 seconds (increase if you have really long or slow blinds ;)
-    this.inControl = true;
-    setTimeout(() => { self.inControl = false; }, 55000);
-
-    this.startedPosition = this.currentPosition;
-    this.targetPosition = parseInt(positionValue);
-
     let loxonePositionValue = 100 - parseInt(positionValue);
 
     let loxoneSlateValue = 0;
