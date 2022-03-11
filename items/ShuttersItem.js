@@ -22,6 +22,7 @@ const ShuttersItem = function(widget,platform,homebridge) {
 
 // Register a listener to be notified of changes in this items value
 ShuttersItem.prototype.initListener = function() {
+    this.log(`[Shutters] Register UUID: ${this.stateUuid}`);
     this.platform.ws.registerListenerForUUID(this.stateUuid, this.callBack.bind(this));
 };
 
@@ -125,21 +126,7 @@ ShuttersItem.prototype.setItem = function(value, callback) {
     this.startedPosition = this.currentPosition;
     this.targetPosition = parseInt(value);
 
-    let command = 0;
-    if (typeof value === 'boolean') {
-        command = value ? 'FullUp' : 'FullDown';
-    } else if (typeof value == 0) {
-        command = 'FullDown';
-    } else if (typeof value == 100) {
-        command = 'FullUp';
-    } else {
-        //reverse again the value
-        command = `ManualPosition/${100 - value}`;
-    }
-    this.log(`[Blinds] HomeKit - send message to ${this.name}: ${command}`);
-    this.platform.ws.sendCommand(this.uuidAction, command);
-    callback();
-
+    this.setBoth(value, this.targetSlatePosition, callback);
 };
 
 ShuttersItem.prototype.getSlateTargetPosition = function(callback) {
@@ -158,22 +145,39 @@ ShuttersItem.prototype.setSlate = function(value, callback) {
     //set a flag that we're in control. this way we'll know if the action is coming from Homekit or from external actor (eg Loxone app)
     //this flag is removed after 20 seconds (increase if you have really long or slow blinds ;)
     this.inControl = true;
-    setTimeout(() => { self.inControl = false; }, 55000);
+    setTimeout(() => { self.inControl = false; }, 600);
 
     this.startedSlatePosition = this.currentSlatePosition;
     this.targetSlatePosition = parseInt(value);
 
-    let loxoneValue = 0;
+    this.setBoth(this.targetPosition, value, callback);
+};
+
+ShuttersItem.prototype.setBoth = function(positionValue, slateValue, callback) {
+
+    //sending new state (pct closed) to loxone
+    const self = this;
+
+    //set a flag that we're in control. this way we'll know if the action is coming from Homekit or from external actor (eg Loxone app)
+    //this flag is removed after 20 seconds (increase if you have really long or slow blinds ;)
+    this.inControl = true;
+    setTimeout(() => { self.inControl = false; }, 55000);
+
+    this.startedPosition = this.currentPosition;
+    this.targetPosition = parseInt(positionValue);
+
+    let loxonePositionValue = 100 - parseInt(positionValue);
+
+    let loxoneSlateValue = 0;
     if (value > 0) {
-        loxoneValue = value * 100/90;
+        loxoneSlateValue = parseInt(slateValue * 100/90);
     }
 
-    let command = `manualLamelle/${loxoneValue}`;
+    let command = `manualPosBlind/${loxonePositionValue}/${loxoneSlateValue}`;
 
-    this.log(`[Shutters] HomeKit - send message to ${this.name}: ${command}: HomeKit value: ${value} `);
+    this.log(`[Shutters] HomeKit - send message to ${this.name}: ${command}`);
     this.platform.ws.sendCommand(this.uuidAction, command);
     callback();
-
 };
 
 module.exports = ShuttersItem;
