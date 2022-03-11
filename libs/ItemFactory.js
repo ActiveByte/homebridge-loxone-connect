@@ -13,7 +13,8 @@ moduleexports.Lightbulb = require('../items/LightbulbItem.js');
 moduleexports.Outlet = require('../items/OutletItem.js');
 moduleexports.Fan = require('../items/FanItem.js');
 moduleexports.Dimmer = require('../items/DimmerItem.js');
-moduleexports.Jalousie = require('../items/BlindsItem.js');
+moduleexports.Blinds = require('../items/BlindsItem.js');
+moduleexports.Shutters = require('../items/ShuttersItem.js');
 moduleexports.Pushbutton = require('../items/PushbuttonItem.js');
 moduleexports.Colorpicker = require('../items/ColorpickerItem.js');
 moduleexports.Gate = require('../items/GateItem.js');
@@ -158,7 +159,11 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
     }
 
     if (item.type == "Jalousie") {
-        item.type = "Jalousie";
+        if (item.details.animation == 0) {
+            item.type = "Shutters";
+        } else {
+            item.type = "Blinds";
+        }
     }
 
     if(item.type === "Switch") {
