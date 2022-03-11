@@ -191,8 +191,10 @@ ShuttersItem.prototype.setBoth = function(positionValue, slateValue, callback) {
     var newSlateValue = slateValue
     if (positionValue > 97) {
         newSlateValue = -90;
+        this.targetSlatePosition = newSlateValue;
     } else if (this.startedPosition > 97 && this.startedSlatePosition < -87) {
         newSlateValue = 90;
+        this.targetSlatePosition = newSlateValue;
     }
 
     let loxonePositionValue = 100 - parseInt(positionValue);
