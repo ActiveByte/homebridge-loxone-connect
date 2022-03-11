@@ -157,7 +157,7 @@ ShuttersItem.prototype.setBoth = function(positionValue, slateValue, callback) {
     let loxonePositionValue = 100 - parseInt(positionValue);
 
     let loxoneSlateValue = 0;
-    if (value > 0) {
+    if (slateValue > 0) {
         loxoneSlateValue = parseInt(slateValue * 100/90);
     }
 
