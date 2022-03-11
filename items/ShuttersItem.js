@@ -189,9 +189,9 @@ ShuttersItem.prototype.setSlate = function(value, callback) {
 ShuttersItem.prototype.setBoth = function(positionValue, slateValue, callback) {
     // if the shutter is all the way up ignore the slate position to prevent lowering after fully up
     var newSlateValue = slateValue
-    if (positionValue < 3) {
+    if (positionValue > 97) {
         newSlateValue = -90;
-    } else if (this.startedPosition < 3 && this.startedSlatePosition < -87) {
+    } else if (this.startedPosition > 97 && this.startedSlatePosition < -87) {
         newSlateValue = 90;
     }
 
