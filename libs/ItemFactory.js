@@ -159,7 +159,7 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
     }
 
     if (item.type == "Jalousie") {
-        if (item.animation == 1) {
+        if (item.details.animation == 1) {
             item.type = "Shutters";
         } else {
             item.type = "Blinds";

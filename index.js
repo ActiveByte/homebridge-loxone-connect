@@ -28,7 +28,8 @@ module.exports = homebridge => {
     Utility.addSupportTo(ItemFactory.Colorpicker, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Gate, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Doorbell, ItemFactory.AbstractItem);
-    Utility.addSupportTo(ItemFactory.Jalousie, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Blinds, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Shutters, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.TimedSwitch, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.Switch, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.SmokeSensor, ItemFactory.AbstractItem);
