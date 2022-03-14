@@ -1,10 +1,10 @@
 
 # Change Log
-## [1.4.0] - 2021/03/11
+## [1.4.0] - 2022/03/11
 
 - Merge pull request #18 from gschiidli/Add-slate-positioning (This update adds a shutter item and adds the option to set the slate angle)
 
-## [1.3.0] - 2021/02/16
+## [1.3.0] - 2022/02/16
 
 - Solved an issue where a dimmer would go to 100% instead of the requested brightness in some circumstances.
 
