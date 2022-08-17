@@ -52,26 +52,16 @@ LightControllerV2MoodSwitchItem.prototype.setItemState = function (value, callba
             .getCharacteristic(this.homebridge.hap.Characteristic.On)
             .updateValue(this.currentState);
 
-        // send the mood change command to Loxone
-        const command = `changeTo/${this.mood.id}`;
+        // send the mood add command to Loxone
+        const command = `addMood/${this.mood.id}`;
         //this.log("[LightControllerV2MoodSwitch] Send message to " + this.name + "uuidAction: '" + this.uuidActionOriginal + "' Command: '" + command + "'");
         this.platform.ws.sendCommand(this.uuidActionOriginal, command);
 
     } else {
         if (this.currentState == true) {
-            // keep previous state if defaultMood is not available, otherwise switch to it
-            this.currentState = this.defaultMood ? false : true;
-            this.otherService
-                .getCharacteristic(this.homebridge.hap.Characteristic.On)
-                .setValue(this.currentState);
-
-            if (this.defaultMood) {
-                // send the mood change command to Loxone
-                const command = `changeTo/${this.defaultMood.id}`;
-                // this.log("[LightControllerV2MoodSwitch] Send message to " + this.name + "uuidAction: '" + this.uuidActionOriginal + "' Command: '" + command + "'");
-                this.platform.ws.sendCommand(this.uuidActionOriginal, command);
-            }
-
+            this.currentState = false;
+            const command = `removeMood/${this.mood.id}`;
+            this.platform.ws.sendCommand(this.uuidActionOriginal, command);
         }
     }
 
