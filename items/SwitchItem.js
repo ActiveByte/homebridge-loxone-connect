@@ -51,8 +51,6 @@ SwitchItem.prototype.setItemState = function (value, callback) {
         const command = newState ? 'On' : 'Off';
         this.log(`[${this.item}] - send message to ${this.name}: ${command}, previous state: ${this.currentState}`);
         this.platform.ws.sendCommand(this.uuidAction, command);
-    } else {
-        this.log(`[${this.item}] - ignoring state change to ${this.name}: ${newState}, previous state: ${this.currentState}`);
     }
     callback();
 };

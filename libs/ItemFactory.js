@@ -120,32 +120,33 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
     const item = factory.itemList[itemId];
 
     function alias(name) {
-        if (factory.alias !== undefined && name in factory.alias) {
-            return factory.alias[name];
-        } else {
-            return name;
-        }
+      if (factory && factory.alias && name in factory.alias) {
+        return factory.alias[name];
+      } else {
+        return name;
+      }
     }
 
+    factory.log(alias('Temperature') + ' - ' + item.name)
     //this function will make accesories more precise based on other attributes
     if (item.type == "InfoOnlyAnalog") {
-        if (item.name.startsWith(alias('Contact'))) {
+        if (item.name.includes(alias('Contact'))) {
             item.type = "ContactSensor"; 
-        } else if (item.name.startsWith(alias('Doorbell'))) {
+        } else if (item.name.includes(alias('Doorbell'))) {
             item.type = "Doorbell";
-        } else if (item.name.startsWith(alias('Motion'))) {
+        } else if (item.name.includes(alias('Motion'))) {
             item.type = "MotionSensor";
-        } else if (item.name.startsWith(alias('Brightness'))) {
+        } else if (item.name.includes(alias('Brightness'))) {
             item.type = "LightSensor";
-        } else if (item.name.startsWith(alias('Trigger'))) {
+        } else if (item.name.includes(alias('Trigger'))) {
             item.type = "Trigger";
-        }else if (item.name.startsWith(alias('Temperature'))) {
+        }else if (item.name.includes(alias('Temperature'))) {
             item.type = "TemperatureSensor";
-        }else if (item.name.startsWith(alias('Humidity'))) {
+        }else if (item.name.includes(alias('Humidity'))) {
             item.type = "HumiditySensor";
-        }else if (item.name.startsWith(alias('Smoke'))) {
+        }else if (item.name.includes(alias('Smoke'))) {
             item.type = "SmokeSensor";
-        }else if (item.name.startsWith(alias('Leak'))) {
+        }else if (item.name.includes(alias('Leak'))) {
             item.type = "LeakSensor";
         }
     }
@@ -175,27 +176,27 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
             }
         }
 
-        if (item.name.startsWith(alias['Outlet'])) {
+        if (item.name.includes(alias('Outlet'))) {
             item.type = "Outlet";
         }
         
-        if (item.name.startsWith(alias['Fan'])) {
+        if (item.name.includes(alias('Fan'))) {
             item.type = "Fan";
         }
 
-        if (item.name.startsWith(alias['Lighting'])) {
+        if (item.name.includes(alias('Lighting'))) {
             item.type = "Lightbulb"; 
         }
 
-        if (item.name.startsWith(alias['Lock'])) {
+        if (item.name.includes(alias('Lock'))) {
             item.type = "Lock"; 
         }
 
-        if (item.name.startsWith(alias['Valve'])) {
+        if (item.name.includes(alias('Valve'))) {
             item.type = "Valve";
         }
 
-        if (item.name.startsWith(alias['Sprinklers'])) {
+        if (item.name.includes(alias('Sprinklers'))) {
             item.type = "Sprinkler";
         }
     }
@@ -208,7 +209,7 @@ moduleexports.Factory.prototype.checkCustomAttrs = (factory, itemId, platform, c
         } 
     }
 
-    if (item.type === alias['Gate']) {
+    if (item.type === alias('Gate')) {
         item.type = "Gate";
     }
 

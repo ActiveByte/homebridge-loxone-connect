@@ -1,5 +1,9 @@
 
 # Change Log
+## [1.4.1] - 2023/01/03
+
+- Fixed assumptions related issues
+
 ## [1.4.0] - 2022/03/11
 
 - Merge pull request #18 from gschiidli/Add-slate-positioning (This update adds a shutter item and adds the option to set the slate angle)
