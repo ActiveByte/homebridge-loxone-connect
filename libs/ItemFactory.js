@@ -76,36 +76,41 @@ moduleexports.Factory.prototype.parseSitemap = function(jsonSitemap) {
                 const control = this.itemList[keyToLookup];
 
                 let controlRoom = null;
-				
-				if (this.platform.rooms.length == 0) {
-					//Show all rooms
-					accessoryList.push(accessory);
-					
-				} else {
-					//Filter rooms
-					if (control.room) {
-						// The controls room is not defined if the room "Not used" is assigned via the Config
-						controlRoom = this.roomList[control.room].name;
 
-						//this.log(this.platform.rooms);
-						//this.log(controlRoom);
+            if ((this.platform.moodSwitches == 'only') && (this.itemList[key].parentType === "LightControllerV2") && (this.itemList[key].type !== 'LightControllerV2MoodSwitch')) {
+                this.log('Skipping as only moodswitched selected');
+            } else {
+                
+            if (this.platform.rooms.length == 0) {
+                //Show all rooms
+                accessoryList.push(accessory);
+                        
+            } else {
+                //Filter rooms
+                if (control.room) {
+                    // The controls room is not defined if the room "Not used" is assigned via the Config
+                    controlRoom = this.roomList[control.room].name;
 
-						if (this.platform.rooms.indexOf(controlRoom) >= 0) {
+                    this.log(this.platform.rooms);
+                    this.log(controlRoom);
+                    this.log(factory.platform.moodSwitches);
+                    this.log(this.itemList[key].type);
 
-							if ((this.platform.moodSwitches == 'only') && (this.itemList[key].type !== 'LightControllerV2MoodSwitch')) {
-								this.log('Skipping as only moodswitched selected');
-							} else {
-								accessoryList.push(accessory);
-							}
-						} else {
-							this.log(`Platform - Skipping as room ${controlRoom} is not in the config.json rooms list.`);
-						}
+                    if (this.platform.rooms.indexOf(controlRoom) >= 0) {
+                        this.log('step 1');
 
-					} else {
-						// cannot add this accessory as it does not have a room
-						this.log('Platform - Skipping as could not determine which room the accessory is in.');
-					}
-				}
+                        accessoryList.push(accessory);
+
+                    } else {
+                        this.log(`Platform - Skipping as room ${controlRoom} is not in the config.json rooms list.`);
+                    }
+
+                } else {
+                    // cannot add this accessory as it does not have a room
+                    this.log('Platform - Skipping as could not determine which room the accessory is in.');
+                }
+            }
+        }
             }
 
         }
