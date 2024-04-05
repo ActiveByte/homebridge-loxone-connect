@@ -1,3 +1,4 @@
+const axios = require('axios');
 const LxCommunicator = require('lxcommunicator');
 const WebSocketConfig = LxCommunicator.WebSocketConfig;
 const {
@@ -7,6 +8,9 @@ const {
 const WSListener = function (platform) {
     this.socket = undefined;
     this.loxdata = undefined;
+
+    this.commandQueue = [];
+    this.isSending = false;
 
     this.log = platform.log;
 
@@ -159,7 +163,23 @@ WSListener.prototype.registerListenerForUUID = function (uuid, callback) {
 };
 
 WSListener.prototype.sendCommand = function (uuid, action) {
-    this.socket.send(`jdev/sps/io/${uuid}/${action}`, 2);
+    this.commandQueue.push(`jdev/sps/io/${uuid}/${action}`);
+    if (!this.isSending) {
+        this.startSending();
+    }
+};
+
+WSListener.prototype.startSending = function () {
+    this.isSending = true;
+    this.intervalId = setInterval(() => {
+        if (this.commandQueue.length === 0) {
+            clearInterval(this.intervalId);
+            this.isSending = false;
+            return;
+        }
+        const command = this.commandQueue.shift();
+        this.socket.send(command, 2);
+    }, 200); // delay in ms
 };
 
 WSListener.prototype.getLastCachedValue = function (uuid) {
