@@ -6,6 +6,7 @@ const DimmerItem = function (widget, platform, homebridge) {
     this.currentState = 0; //will be a value between 0 and 100 for dimmers
     this.lastUpdate = 0; //last update
     this.lastBrightnessUpdate = 0; //last brightness update
+    this.lastBrightnessValue = 0; //last brightness value
     DimmerItem.super_.call(this, widget, platform, homebridge);
 };
 
@@ -60,23 +61,34 @@ DimmerItem.prototype.getItemPowerState = function (callback) {
 
 DimmerItem.prototype.setItemState = function (value, callback) {
     this.lastBrightnessUpdate = new Date().getTime();
+    this.lastBrightnessValue = value;
 
     this.log(`[Dimmer] HomeKit - send brightness message to ${this.name}: ${value}`);
     this.platform.ws.sendCommand(this.uuidAction, value);
-    
-    callback();
 
+    callback();
 };
 
 DimmerItem.prototype.setItemPowerState = async function (value, callback) {
     this.lastUpdate = Date.now();
-    
+
     await new Promise(resolve => setTimeout(resolve, 100));
 
     if ((Date.now() - this.lastBrightnessUpdate) > 105) {
-        this.log(`[Dimmer] HomeKit - send on/off message to ${this.name}: ${value}`);
         const command = (value == '1') ? 'On' : 'Off';
+
+        // If the dimmer was turned off, resend the last brightness value instead of a simple 'On' command
+        if (command == 'On') {
+            if (this.lastBrightnessValue == 0) {
+                this.lastBrightnessValue = 100;
+            }
+            this.log(`[Dimmer] HomeKit - send brightness message to ${this.name}: ${this.lastBrightnessValue}`);
+            this.platform.ws.sendCommand(this.uuidAction, this.lastBrightnessValue);
+        }
+        else {
+            this.log(`[Dimmer] HomeKit - send on/off message to ${this.name}: ${command}`);
             this.platform.ws.sendCommand(this.uuidAction, command);
+        }
     }
 
     callback();
