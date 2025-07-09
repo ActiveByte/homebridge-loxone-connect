@@ -1,5 +1,9 @@
 
 # Change Log
+## [1.4.2] - 2025/07/09
+
+- Added Irrigation Control as a Valve
+
 ## [1.4.1] - 2023/01/03
 
 - Fixed assumptions related issues

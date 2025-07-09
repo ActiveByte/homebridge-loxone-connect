@@ -7,6 +7,7 @@ moduleexports.LightControllerV2MoodSwitch = require('../items/LightControllerV2M
 moduleexports.TemperatureSensor = require('../items/TemperatureSensorItem.js');
 moduleexports.Trigger = require('../items/TriggerItem.js');
 moduleexports.HumiditySensor = require('../items/HumiditySensorItem.js');
+moduleexports.Irrigation = require('../items/IrrigationItem.js');
 moduleexports.Switch = require('../items/SwitchItem.js');
 moduleexports.TimedSwitch = require('../items/TimedSwitchItem.js');
 moduleexports.Lightbulb = require('../items/LightbulbItem.js');

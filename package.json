@@ -1,6 +1,6 @@
 {
   "name": "homebridge-loxone-connect",
-  "version": "1.3.2",
+  "version": "1.4.2",
   "description": "Homebridge plugin for controlling Loxone.",
   "main": "index.js",
   "repository": {

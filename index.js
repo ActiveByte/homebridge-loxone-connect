@@ -20,6 +20,7 @@ module.exports = homebridge => {
     Utility.addSupportTo(ItemFactory.Trigger, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.TemperatureSensor, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.HumiditySensor, ItemFactory.AbstractItem);
+    Utility.addSupportTo(ItemFactory.Irrigation, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.MotionSensor, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.ContactSensor, ItemFactory.AbstractItem);
     Utility.addSupportTo(ItemFactory.LightSensor, ItemFactory.AbstractItem);
