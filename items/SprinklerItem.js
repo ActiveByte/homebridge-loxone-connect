@@ -7,9 +7,9 @@ Sprinklertem.prototype.getOtherServices = function () {
     
     this.item = 'Sprinklers';
 
-    otherService.getCharacteristic(Characteristic.ValveType).updateValue(1);
+    otherService.getCharacteristic(this.homebridge.hap.Characteristic.ValveType).updateValue(1);
     
-    otherService.getCharacteristic(Characteristic.Active)
+    otherService.getCharacteristic(this.homebridge.hap.Characteristic.Active)
     .on('set', this.setItemState.bind(this))
 
 

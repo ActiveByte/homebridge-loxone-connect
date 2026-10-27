@@ -1,6 +1,4 @@
 const ValveItem = function (widget, platform, homebridge) {
-    Characteristic = homebridge.hap.Characteristic;
-    
     this.platform = platform;
     this.uuidAction = widget.uuidAction; //to control a switch, use the uuidAction
     this.stateUuid = widget.states.active; //a switch always has a state called active, which is the uuid which will receive the event to read
@@ -20,8 +18,8 @@ ValveItem.prototype.callBack = function (value) {
 
     this.currentState = value;
 
-    this.otherService.getCharacteristic(Characteristic.Active).updateValue(this.currentState == '1');
-    this.otherService.getCharacteristic(Characteristic.InUse).updateValue(this.currentState == '1');
+    this.otherService.getCharacteristic(this.homebridge.hap.Characteristic.Active).updateValue(this.currentState == '1');
+    this.otherService.getCharacteristic(this.homebridge.hap.Characteristic.InUse).updateValue(this.currentState == '1');
 };
 
 ValveItem.prototype.getOtherServices = function () {
@@ -29,9 +27,9 @@ ValveItem.prototype.getOtherServices = function () {
     
     this.item = 'Valve';
     
-    otherService.getCharacteristic(Characteristic.ValveType).updateValue(0);
+    otherService.getCharacteristic(this.homebridge.hap.Characteristic.ValveType).updateValue(0);
     
-    otherService.getCharacteristic(Characteristic.Active)
+    otherService.getCharacteristic(this.homebridge.hap.Characteristic.Active)
     .on('set', this.setItemState.bind(this))
 
     return otherService;

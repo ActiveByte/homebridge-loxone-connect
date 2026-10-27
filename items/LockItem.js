@@ -1,6 +1,4 @@
 const LockItem = function (widget, platform, homebridge) {
-    Characteristic = homebridge.hap.Characteristic;
-
     this.platform = platform;
     this.uuidAction = widget.uuidAction; //to control a switch, use the uuidAction
     this.stateUuid = widget.states.active; //a switch always has a state called active, which is the uuid which will receive the event to read
@@ -23,7 +21,7 @@ LockItem.prototype.callBack = function (value) {
 
     this.currentState = !value;
 
-    this.otherService.getCharacteristic(Characteristic.LockCurrentState).updateValue(this.currentState == '1');
+    this.otherService.getCharacteristic(this.homebridge.hap.Characteristic.LockCurrentState).updateValue(this.currentState == '1');
 
     if (this.autoLock) {
         if (this.currentState == 0) {
@@ -38,10 +36,10 @@ LockItem.prototype.callBack = function (value) {
 LockItem.prototype.getOtherServices = function () {
     const otherService = new this.homebridge.hap.Service.LockMechanism();
 
-    otherService.setCharacteristic(Characteristic.LockCurrentState, Characteristic.LockCurrentState.SECURED);
-    otherService.setCharacteristic(Characteristic.LockTargetState, Characteristic.LockTargetState.SECURED);
+    otherService.setCharacteristic(this.homebridge.hap.Characteristic.LockCurrentState, this.homebridge.hap.Characteristic.LockCurrentState.SECURED);
+    otherService.setCharacteristic(this.homebridge.hap.Characteristic.LockTargetState, this.homebridge.hap.Characteristic.LockTargetState.SECURED);
 
-    otherService.getCharacteristic(Characteristic.LockTargetState)
+    otherService.getCharacteristic(this.homebridge.hap.Characteristic.LockTargetState)
         .on('set', this.setItemState.bind(this))
 
     return otherService;
@@ -51,7 +49,7 @@ LockItem.prototype.autoLockFunction = function () {
     this.log(`[Lock] Waiting ${this.autoLockDelay} seconds for autolock`);
 
     this.autoTimer = setTimeout(() => {
-        this.otherService.setCharacteristic(Characteristic.LockTargetState, Characteristic.LockTargetState.SECURED)
+        this.otherService.setCharacteristic(this.homebridge.hap.Characteristic.LockTargetState, this.homebridge.hap.Characteristic.LockTargetState.SECURED)
     }, this.autoLockDelay * 1000)
 };
 
