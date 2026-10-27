@@ -10,6 +10,7 @@ const AbstractItem = function(widget,platform,homebridge) {
     this.UUID = homebridge.hap.uuid.generate(String(widget.uuidAction));
     
     // provide explicit UUID to prevent automatic UUID generation by homebridge (which would fail because of possibly equal item name)
+    // uuid_base determines the accessory UUID in both Homebridge v1 and v2; keep it so UUIDs stay stable.
     this.uuid_base = this.UUID;
     
 	// console.log("Generating new homebridge accessory '" + this.name + "' with UUID: " + this.UUID + " from accessory with ID: " + widget.uuidAction);
